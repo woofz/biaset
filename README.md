@@ -20,6 +20,6 @@ Ogni campionato avrà una classifica con tutte le squadre ad esso associate. I v
 
 ### Membri del progetto
 
-Candidato | Matricola
------------- | -------------
-Danilo Aliberti | 0512103836
+Candidato | Matricola | E-Mail
+------------ | ------------- | -------------
+Danilo Aliberti | 0512103836 | d.aliberti10@studenti.unisa.it
