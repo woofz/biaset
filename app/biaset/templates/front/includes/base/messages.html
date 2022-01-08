@@ -1,0 +1,19 @@
+{% block content%}
+
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {% if messages %}
+    <script>
+        {% for message in messages %}
+             Swal.fire({
+                        position: 'top-center',
+                        icon: '{{message.tags}}',
+                        title: '{{message}}',
+                        showConfirmButton: false,
+                        timer: 3000
+                        });
+        {% endfor %}
+    </script>
+    {% endif %}
+
+{% endblock %}

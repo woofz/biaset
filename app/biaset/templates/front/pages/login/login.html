@@ -1,0 +1,88 @@
+{% load static %}
+{% load socialaccount %}
+<!doctype html>
+<html class="fixed">
+	<head>
+
+		<!-- Basic -->
+		<meta charset="UTF-8">
+
+		<meta name="keywords" content="VQ Business Manager Login" />
+		<meta name="description" content="Login">
+		<meta name="author" content="w00fz">
+		<title>BiaSet Login</title>
+		<!-- Mobile Metas -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+		<!-- Web Fonts  -->
+		<link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
+
+		<!-- Vendor CSS -->
+		<link rel="stylesheet" href="{% static 'assets/vendor/bootstrap/css/bootstrap.css' %}" />
+		<link rel="stylesheet" href="{% static 'assets/vendor/font-awesome/css/font-awesome.css' %}" />
+		<link rel="stylesheet" href="{% static 'assets/vendor/magnific-popup/magnific-popup.css' %}" />
+		<link rel="stylesheet" href="{% static 'assets/vendor/bootstrap-datepicker/css/datepicker3.css' %}" />
+
+		<!-- Theme CSS -->
+		<link rel="stylesheet" href="{% static 'assets/stylesheets/theme.css' %}" />
+
+		<!-- Skin CSS -->
+		<link rel="stylesheet" href="{% static 'assets/stylesheets/skins/default.css' %}" />
+
+		<!-- Theme Custom CSS -->
+		<link rel="stylesheet" href="{% static 'assets/stylesheets/theme-custom.css' %}">
+
+		<!-- Head Libs -->
+		<script src="{% static 'assets/vendor/modernizr/modernizr.js' %}"></script>
+
+
+		<!-- Icons -->
+		<script src="https://kit.fontawesome.com/283b224be3.js" crossorigin="anonymous"></script>
+
+	</head>
+	<body>
+		<!-- start: page -->
+		<section class="body-sign">
+			<div class="center-sign">
+				<a href="/" class="logo pull-left">
+					<img src="{% static 'assets/images/logo_fca.png' %}" height="70" alt="Porto Admin" />
+				</a>
+
+				<div class="panel panel-sign">
+					<div class="panel-title-sign mt-xl text-right">
+						<h2 class="title text-uppercase text-bold m-none"><i class="fa fa-user mr-xs"></i> LOGIN</h2>
+					</div>
+					<div class="panel-body">
+						<form action="index.html" method="post">
+						<p class="center"><strong>Seleziona un Social col quale effettuare il login</strong></p>
+							<div class="mb-xs text-center">
+								<a href="{% provider_login_url "google" %}"" class="btn btn- mb-md ml-xs mr-xs">Login con Google <i class="fab fa-google"></i></a>
+							</div>
+						</form>
+					</div>
+				</div>
+				<p class="text-center text-muted mt-md mb-md">Developed by <a href="mailto:danilo.aliberti@woofz.net">w00fz</a></p>
+			</div>
+		</section>
+		<!-- end: page -->
+
+		<!-- Vendor -->
+		<script src="{% static 'assets/vendor/jquery/jquery.js' %}"></script>
+		<script src="{% static 'assets/vendor/jquery-browser-mobile/jquery.browser.mobile.js' %}"></script>
+		<script src="{% static 'assets/vendor/bootstrap/js/bootstrap.js' %}"></script>
+		<script src="{% static 'assets/vendor/nanoscroller/nanoscroller.js' %}"></script>
+		<script src="{% static 'assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js' %}"></script>
+		<script src="{% static 'assets/vendor/magnific-popup/magnific-popup.js' %}"></script>
+		<script src="{% static 'assets/vendor/jquery-placeholder/jquery.placeholder.js' %}"></script>
+		
+		<!-- Theme Base, Components and Settings -->
+		<script src="{% static 'assets/javascripts/theme.js' %}"></script>
+		
+		<!-- Theme Custom -->
+		<script src="{% static 'assets/javascripts/theme.custom.js' %}"></script>
+		
+		<!-- Theme Initialization Files -->
+		<script src="{% static 'assets/javascripts/theme.init.js' %}"></script>
+
+	</body>
+</html>

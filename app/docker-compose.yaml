@@ -1,0 +1,30 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: 'biaset'
+      MYSQL_ROOT_PASSWORD: 'rootpwd'
+      MYSQL_USER: "testuser"
+      MYSQL_PASSWORD: "testpwd"
+    container_name: mysql_biaset_db
+    ports:
+        - 3306:3306
+        
+  app:
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    image: app:django-biaset
+    container_name:  biaset_container
+    command: bash -c "python biaset/manage.py makemigrations && 
+                      python biaset/manage.py migrate && 
+                      python biaset/manage.py runserver 0.0.0.0:8000"
+    depends_on: 
+      - db
+  
