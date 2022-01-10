@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.views import View
 from django.core.mail import send_mail
-from gestioneutenza.models import Allenatore, ChampionshipAdmin, LeagueAdmin
 
 class HomeView(View):
     '''Defines the dashboard home view'''

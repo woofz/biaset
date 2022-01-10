@@ -1,36 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.base import ModelBase
+from django.db.models.fields.related import ManyToManyField
 
-class LeagueAdmin(models.Model):
-    '''Model describing a League Admin'''
-    user = models.OneToOneField(User, verbose_name=("Utente"), on_delete=models.CASCADE)
-    nome_profilo = models.CharField(max_length=35, blank=True, null=True, default="League Admin", verbose_name="Profilo")
-    
-    def __str__(self) -> str:
-        return f"{self.user.first_name}, {self.nome_profilo}"
-    
-    
-class ChampionshipAdmin(models.Model):
-    '''Model describing a Championship Admin'''
-    user = models.OneToOneField(User, verbose_name=("Utente"), on_delete=models.CASCADE)
-    nome_profilo = models.CharField(max_length=35, blank=True, null=True, default="Championship Admin", verbose_name="Profilo")
-    
-    def __str__(self) -> str:
-        return f"{self.user.first_name} {self.user.last_name}, {self.user.nome_profilo}"
+class Profilo(models.Model):
+    nome = models.CharField(max_length=255, verbose_name='Tipo profilo')
+    user = ManyToManyField(User, verbose_name='Utente', blank=True)
 
-
-class Allenatore(models.Model):
-    '''Model describing a Team Coach'''
-    user = models.OneToOneField(User, verbose_name=("Utente"), on_delete=models.CASCADE)
-    nome_profilo = models.CharField(max_length=35, blank=True, null=True, default="Allenatore", verbose_name="Profilo")
-    campionati_vinti = models.IntegerField(default=0, blank=True, null=True)
-    # ToDo: add Squadra
-    
-    def __str__(self) -> str:
-        return f"{self.user.first_name} {self.user.last_name}, {self.user.nome_profilo}"
-    
     class Meta:
-        verbose_name_plural = 'Allenatori'
+        verbose_name_plural = "Profili"
+
+    def __str__(self) -> str:
+        return self.nome
         
 
 class Invito(models.Model):
@@ -41,7 +22,7 @@ class Invito(models.Model):
     # ToDo: campionatoId
 
     def __str__(self) -> str:
-        return 
+        return f"{self.destinatario}, {self.codice_invito}"
     
     class Meta:
         verbose_name_plural = 'Inviti'
