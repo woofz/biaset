@@ -1,11 +1,13 @@
 from django.db import models
 from django.db.models.fields import related
 from gestionecampionato.models import Campionato
+from django.contrib.auth.models import User
 
 class Squadra(models.Model):
     nome = models.CharField(max_length=50, verbose_name="Nome squadra")
     campionato = models.ForeignKey(Campionato, verbose_name="Campionato", on_delete=models.CASCADE)
-
+    allenatore = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Allenatore', blank=True, null=True)
+    
     def __str__(self):
         return f"{self.nome} - {self.campionato.nome_campionato}"
     

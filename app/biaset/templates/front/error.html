@@ -1,0 +1,17 @@
+{% extends 'front/base.html' %}
+{% block content %}
+<section class="body-error error-inside">
+    <div class="center-error">
+
+        <div class="row">
+            <div class="col-l-12">
+                <div class="main-error mb-xlg">
+                    <h4 class="error-code text-dark text-center text-semibold m-none">Errore <i class="far fa-sad-tear"></i></h4>
+                    <p class="error-explanation text-center">{{ error }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- end: page -->
+{% endblock %}
