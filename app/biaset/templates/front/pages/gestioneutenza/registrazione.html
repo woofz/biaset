@@ -12,11 +12,11 @@
                         <h2 class="panel-title">Iscrizione</h2>
                     </header>
                     <div class="panel-body">
-                        <p class="text-justify"><h4>Benvenuto su <strong>Biaset</strong>! Se sei stato invitato da un amministratore di campionato, clicca su <strong>Partecipa a campionato</strong> per utilizzare l'invito per l'iscrizione al campionato! In alternativa, se vuoi creare il tuo campionato di Fantacalcio, clicca su <strong>Crea campionato.<strong></h4></p>
+                        <p class="text-justify"><h4>Benvenuto su <strong>Biaset</strong>! <br> <br> Se sei stato invitato da un amministratore di campionato, clicca su <strong>Partecipa a campionato</strong> per utilizzare l'invito per l'iscrizione al campionato! <br>In alternativa, se vuoi creare il tuo campionato di Fantacalcio, clicca su <strong>Crea campionato.<strong></h4></p>
                         <div class="panel-body col-m-8 center">
                             <div class="btn-group btn-group-justified">
-                                <a href="" class="btn btn-danger" role="button"><b>Crea campionato</b></a>
-                                <a href="" class="btn btn-success" role="button"><b>Partecipa a campionato</b></a>
+                                <a href="{% url 'gestioneutenza:registrazione_ca' 'ca' %}" class="btn btn-danger" role="button"><b>Crea campionato</b></a>
+                                <a href="{% url 'gestioneutenza:registrazione_ca' 'allenatore' %}" class="btn btn-success" role="button"><b>Partecipa a campionato</b></a>
                             </div>
                             <br>
                         </div>

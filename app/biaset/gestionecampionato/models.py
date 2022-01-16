@@ -1,13 +1,37 @@
+from email.policy import default
 from django.db import models
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 class Campionato(models.Model):
+    championship_admin = models.ForeignKey(User, verbose_name='Championship Admin', blank=True, null=True, on_delete=models.CASCADE)
     nome_campionato = models.CharField(max_length=255)
-    giornata_corrente = models.IntegerField()
+    giornata_corrente = models.IntegerField(default=1)
     max_partecipanti = models.IntegerField(verbose_name='Numero massimo partecipanti', default=10)
 
     def __str__(self) -> str:
-        return f"{self.nome_campionato}, giornata {self.giornata_corrente}"
+        return f"{self.nome_campionato}"
+    
+    def clean(self):
+        existing_campionato = Campionato.objects.filter(nome_campionato=self.nome_campionato).first()
+        if (self.max_partecipanti % 2) != 0:
+            raise ValidationError('Il numero di partecipanti deve essere pari.')
+        if existing_campionato:
+            raise ValidationError('Esiste già un campionato con questo nome.')
     
     class Meta:
         verbose_name_plural = 'Campionati'
         
+
+class Partita(models.Model):
+    gol_squadra = models.IntegerField(default=0)
+    squadra = models.ManyToManyField('gestionesquadra.Squadra', verbose_name='Squadra')
+
+    class Meta:
+        verbose_name_plural = 'Partite'
+
+    def __str__(self):
+        squadra1 = self.squadra.all().first()
+        squadra2 = self.squadra.all().last()
+        
+        return f"{squadra1.campionato} - {squadra1} vs {squadra2}"

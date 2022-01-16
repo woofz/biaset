@@ -1,0 +1,33 @@
+{% block menusquadra %}
+									<!-- Gestione Squadra -->
+									<li class="nav-parent">
+										<a>
+											<i class="fa fa-futbol" aria-hidden="true"></i>
+											<span>Gestione Squadra</span>
+										</a>
+										<ul class="nav nav-children">
+											<li>
+												<a href="pages-signup.html">
+													 Visualizza squadra
+												</a>
+											</li>
+											<li>
+												<a href="pages-signup.html">
+													 Visualizza squadre campionato
+												</a>
+											</li>
+											<li>
+												<a href="pages-signup.html">
+													 Modifica nome squadra
+												</a>
+											</li>
+                                            {% if request.session.profilo == 'Championship Admin'%}
+                                            
+                                            {% endif %}
+
+                                            {% if request.session.profilo == 'League Admin'%}
+                                            
+                                            {% endif %}
+										</ul>
+									</li>
+{% endblock %}

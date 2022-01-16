@@ -12,93 +12,37 @@
 							<nav id="menu" class="nav-main" role="navigation">
 								<ul class="nav nav-main">
 									<li class="nav-active">
-										<a href="index.html">
+										<a href="{% url 'dashboard_index' %}">
 											<i class="fa fa-home" aria-hidden="true"></i>
 											<span>Dashboard</span>
 										</a>
 									</li>
 									<li>
-										<a href="mailbox-folder.html">
+										<a href="">
 											<span class="pull-right label label-primary">2</span>
 											<i class="fa fa-envelope" aria-hidden="true"></i>
 											<span>Gestione Messaggistica</span>
 										</a>
 									</li>
+									{% if request.session.profilo %}
 									<!-- Gestione Squadra -->
-									<li class="nav-parent">
-										<a>
-											<i class="fa fa-futbol" aria-hidden="true"></i>
-											<span>Gestione Squadra</span>
-										</a>
-										<ul class="nav nav-children">
-											<li>
-												<a href="pages-signup.html">
-													 Visualizza squadra
-												</a>
-											</li>
-											<li>
-												<a href="pages-signup.html">
-													 Visualizza squadre campionato
-												</a>
-											</li>
-											<li>
-												<a href="pages-signup.html">
-													 Modifica nome squadra
-												</a>
-											</li>
-										</ul>
-									</li>
+									{% block menusquadra %} 
+										{% include 'front/includes/base/menu-squadra.html' %}
+									{% endblock %}
+									<!-- END gestione squadra-->
+
 									<!-- Gestione campionato -->
-									<li class="nav-parent">
-										<a>
-											<i class="fa fa-trophy" aria-hidden="true"></i>
-											<span>Gestione campionato</span>
-										</a>
-										<ul class="nav nav-children">
-											<li>
-												<a href="pages-signup.html">
-													 Inserisci formazione
-												</a>
-											</li>
-											<li>
-												<a href="pages-signup.html">
-													 Modifica formazione
-												</a>
-											</li>
-											<li>
-												<a href="pages-signup.html">
-													 Visualizza giornata corrente
-												</a>
-											</li>
-										</ul>
-									</li>
+									{% block menucampionato %}
+										{% include 'front/includes/base/menu-campionato.html' %}
+									{% endblock %}
 									<!-- END gestione campionato-->
 
 									<!-- Gestione utenza (CA/LA) -->
-									<li class="nav-parent">
-										<a>
-											<i class="fa fa-user" aria-hidden="true"></i>
-											<span>Gestione utenza</span>
-										</a>
-										<ul class="nav nav-children">
-											<li>
-												<a href="pages-signup.html">
-													 Il tuo profilo
-												</a>
-											</li>
-											<li>
-												<a href="pages-signup.html">
-													 Modifica formazione
-												</a>
-											</li>
-											<li>
-												<a href="pages-signup.html">
-													 Visualizza giornata corrente
-												</a>
-											</li>
-										</ul>
-									</li>
-									<!-- END gestione campionato-->
+									{% block menuutenza %}
+										{% include 'front/includes/base/menu-utenza.html' %}
+									{% endblock %}
+									<!-- END gestione utenza-->
+									{% endif %}
 								</ul>
 							</nav>
 						</div>

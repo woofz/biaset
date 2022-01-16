@@ -9,7 +9,7 @@ class Squadra(models.Model):
     allenatore = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Allenatore', blank=True, null=True)
     
     def __str__(self):
-        return f"{self.nome} - {self.campionato.nome_campionato}"
+        return f"{self.nome}"
     
     class Meta:
         verbose_name_plural = 'Squadre'

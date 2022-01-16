@@ -28,3 +28,6 @@ urllib3==1.26.6
 yarl==1.6.3
 pydot==1.4.2
 pyparsing==3.0.6
+django-ckeditor==6.0.0
+django-datetime-widget2==0.9.5
+competitions-scheduler==0.2.5.post2

@@ -34,6 +34,10 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
     
+    'datetimewidget',
+    'ckeditor',
+    
+
     'core',
     'gestioneutenza',
     'gestionecampionato',
@@ -113,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Rome'
 
 USE_I18N = True
 
@@ -135,7 +139,7 @@ STATICFILES_DIRS = ( os.path.join('static'), )
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Login
-LOGIN_URL = 'login/'
+LOGIN_URL = 'gestioneutenza/login/'
 
 
 # All Auth Providers
@@ -153,12 +157,17 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 # Email Backend
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# For PRODUCTION 
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# For dev
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 
 EMAIL_USE_TLS = False
 EMAIL_HOST = 'ssl0.ovh.net'
-EMAIL_HOST_USER = 'email'
-EMAIL_HOST_PASSWORD = 'pwd'
+EMAIL_HOST_USER = 'email-username'
+EMAIL_HOST_PASSWORD = 'email-passwd'
 EMAIL_PORT = 587
 
 # Graph settings
@@ -169,3 +178,13 @@ GRAPH_MODELS = {
 
 # Social Account Settings
 SOCIALACCOUNT_ADAPTER = 'core.adapters.CustomSocialAccountAdapter'
+
+
+# Ck Editor Config
+CKEDITOR_CONFIGS = {
+    'default': {
+        'skin': 'moono',
+        'height': 'auto',
+        'width': 'auto',
+    },
+}

@@ -1,0 +1,34 @@
+
+{% extends 'front/base.html' %}
+
+{% block content %}
+<section role="main" class="content-body">
+    <header class="page-header">
+        <h2>Modifica Campionato</h2>
+    </header>
+        <div class="row">
+            <div class="col-md-12">
+                <section class="panel">
+                    <header class="panel-heading">   
+                        <h2 class="panel-title">Modifica campionato</h2>
+                    </header>
+                    <div class="panel-body">
+                        <form class="form-horizontal form-bordered" action="" method="post">
+                            {% csrf_token %}
+                            {{ form.media }}
+                            <div class="form-group">
+                                <div class="text-danger">{{ form.non_field_errors }}</div>
+                                <label class="col-md-3 control-label" for="inputDefault" required>Nome campionato</label>
+                                <div class="col-md-6">
+                                    {{ form.nome_campionato }}
+                                </div>
+                            </div>
+                    </div>
+                    <footer class="panel-footer">
+                        <input type="submit" id="submit" value="Crea campionato" class="btn btn-primary"></button>
+                    </footer>
+                </form>
+                </section>
+</section>
+
+{% endblock %}
