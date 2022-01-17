@@ -1,9 +1,11 @@
 from email.policy import default
+from tabnanny import verbose
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
 class Campionato(models.Model):
+    """Campionato Entity"""
     championship_admin = models.ForeignKey(User, verbose_name='Championship Admin', blank=True, null=True, on_delete=models.CASCADE)
     nome_campionato = models.CharField(max_length=255)
     giornata_corrente = models.IntegerField(default=1)
@@ -24,8 +26,11 @@ class Campionato(models.Model):
         
 
 class Partita(models.Model):
-    gol_squadra = models.IntegerField(default=0)
+    """Partita Entity"""
+    gol_squadra1 = models.IntegerField(default=0, verbose_name='Gol Squadra 1')
+    gol_squadra2 = models.IntegerField(default=0, verbose_name='Gol Squadra 2')
     squadra = models.ManyToManyField('gestionesquadra.Squadra', verbose_name='Squadra')
+    giornata = models.IntegerField(default=1, verbose_name='Giornata')
 
     class Meta:
         verbose_name_plural = 'Partite'

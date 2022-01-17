@@ -1,0 +1,50 @@
+{% extends 'front/base.html' %}
+
+{% block content %}
+
+<section role="main" class="content-body">
+    <header class="page-header">
+        <h2>Creazione Campionato</h2>
+    </header>
+        <div class="row">
+            <div class="col-md-12">
+                <section class="panel">
+                    <header class="panel-heading">   
+                        <h2 class="panel-title">Genera calendario</h2>
+                    </header>
+                    <div class="panel-body">
+                        <p>In questa pagina potrai avviare la generazione automatica del calendario. Di seguito sono listate le squadre del tuo campionato. </p>
+                        <div class="col-md-6">
+                            <div class="table-responsive">
+                            <table class="table table-hover mb-none">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nome squadra</th>
+                                        <th>Allenatore</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for team in championship_teams %}
+                                    <tr>
+                                        <td>{{ team.id }}</td>
+                                        <td>{{ team.nome }}</td>
+                                        <td>{{ team.allenatore }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    </div>
+                    <footer class="panel-footer">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden">
+                            <input type="submit" id="submit" value="Genera calendario" class="btn btn-primary"></button>
+                        </form>
+                    </footer>
+                </section>
+</section>
+
+{% endblock content %}

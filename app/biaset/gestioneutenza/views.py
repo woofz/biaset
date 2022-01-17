@@ -17,15 +17,18 @@ from django.utils.decorators import method_decorator
 
 decorators_ca = [check_user_permission_ca]
 
+
 class RegistrationView(View):
+    """Definisce la vista di Registrazione"""
     template_name = "front/pages/gestioneutenza/registrazione.html"
-    
+
     @method_decorator(check_if_profile_exists)
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, context={})
-    
+
 
 class StrategyRegistrationView(View):
+    """Definisce la vista di registrazione tramite Strategy pattern"""
     error_template_name = "front/error.html"
     strategy_context = Context(CaStrategy())
 
@@ -37,24 +40,30 @@ class StrategyRegistrationView(View):
         utente = User.objects.get(pk=request.user.pk)
         try:
             if self.strategy_context.doOperation(utente):
-                messages.success(request, 'Registrazione avvenuta con successo!')
+                messages.success(
+                    request, 'Registrazione avvenuta con successo!')
                 return redirect(reverse('dashboard_index'))
         except InviteNotFoundException:
             pass
-        
-        return render(request, self.error_template_name, context={'error': error})
-    
+
+        return render(
+            request,
+            self.error_template_name,
+            context={
+                'error': error})
+
 
 class LoginView(View):
     '''Definisce la login view'''
     template_name = "front/pages/gestioneutenza/login.html"
-    
+
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, context={})
-    
+
 
 class LogoutView(View):
-    
+    """Classe vista per funzionalità di logout"""
+
     def get(self, request, *args, **kwargs):
         logout(request)
         return redirect(reverse('dashboard_index'))
@@ -62,6 +71,7 @@ class LogoutView(View):
 
 @method_decorator(decorators_ca, name='dispatch')
 class InviteCreateView(SuccessMessageMixin, CreateView):
+    """Classe vista per la creazione di un invito"""
     model = Invito
     template_name = "front/pages/gestioneutenza/creainvito.html"
     form_class = CreaInvitoForm
