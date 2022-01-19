@@ -1,5 +1,5 @@
 from django.urls import path
-from gestioneutenza.views import RegistrationView, StrategyRegistrationView, LoginView, InviteCreateView, LogoutView
+from gestioneutenza.views import RegistrationView, StrategyRegistrationView, LoginView, InviteCreateView, LogoutView, ListUtentiView
 from django.contrib.auth.decorators import login_required
 
 app_name = 'gestioneutenza'
@@ -9,4 +9,5 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login_view'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('creainvito/', InviteCreateView.as_view(), name='crea_invito'),
+    path('utenti/', login_required(ListUtentiView.as_view()), name='list_utenti')
 ]

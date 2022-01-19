@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import CreaCampionatoView, ModificaCampionatoView, GeneraCalendarioView
+from .views import CreaCampionatoView, ModificaCampionatoView, GeneraCalendarioView, SelezionaModuloView, InserisciFormazioneTitolariView
 from django.contrib.auth.decorators import login_required
 
 app_name = 'gestionecampionato'
@@ -8,4 +8,6 @@ urlpatterns = [
     path('creacampionato/', login_required(CreaCampionatoView.as_view()), name='inserisci_campionato'),
     path('modificacampionato/<pk>', login_required(ModificaCampionatoView.as_view()), name='modifica_campionato'),
     path('generacalendario/', login_required(GeneraCalendarioView.as_view()), name='genera_calendario'),
+    path('inserisciformazione/', login_required(SelezionaModuloView.as_view()), name='seleziona_modulo'),
+    path('inserisciformazione/titolari/<int:d>/<int:c>/<int:a>/', login_required(InserisciFormazioneTitolariView.as_view()), name='inserisci_titolari'),
 ]

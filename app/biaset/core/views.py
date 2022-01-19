@@ -20,8 +20,9 @@ class HomeView(View):
         profilo = None or Profilo.objects.filter(user=utente).first()
         if not profilo:
             return redirect(reverse('gestioneutenza:registrazione'))
-        squadra = Squadra.objects.filter(allenatore=utente).first()
-        request.session['profilo'] = profilo.nome # Setto la variabile di sessione per il profilo
+        #squadra = Squadra.objects.filter(allenatore=utente).first()
+        if not request.session.get('profilo'):
+            request.session['profilo'] = profilo.nome # Setto la variabile di sessione per il profilo
         
         return render(request, self.template_name, context={'profilo': profilo,
                                                             'utente': utente,})

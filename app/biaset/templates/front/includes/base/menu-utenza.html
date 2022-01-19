@@ -6,26 +6,29 @@
     </a>
     <ul class="nav nav-children">
         <li>
-            <a href="pages-signup.html">
+            <a href="">
                  Il tuo profilo
             </a>
         </li>
-        <li>
-            <a href="pages-signup.html">
-                 Modifica formazione
-            </a>
-        </li>
-        <li>
-            <a href="pages-signup.html">
-                 Visualizza giornata corrente
-            </a>
-        </li>
         {% if request.session.profilo == 'Championship Admin'%}
-                                            
+        <li>
+            <a href="">
+                 Visualizza utenti campionato
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'gestioneutenza:crea_invito' %}">
+                 Invita utente
+            </a>
+        </li>                          
         {% endif %}
 
         {% if request.session.profilo == 'League Admin'%}
-        
+        <li>
+            <a href="{% url 'gestioneutenza:list_utenti' %}">
+                 Visualizza utenti piattaforma
+            </a>
+        </li>   
         {% endif %}
     </ul>
 </li>

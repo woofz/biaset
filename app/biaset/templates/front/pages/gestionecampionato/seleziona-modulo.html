@@ -1,0 +1,48 @@
+
+{% extends 'front/base.html' %}
+
+{% block content %}
+<section role="main" class="content-body">
+    <header class="page-header">
+        <h2>Seleziona Modulo Formazione</h2>
+    </header>
+        <div class="row">
+            <div class="col-md-12">
+                <section class="panel">
+                    <header class="panel-heading">   
+                        <h2 class="panel-title">Seleziona modulo</h2>
+                    </header>
+                    <div class="panel-body">
+                        <p class="center">Seleziona accuratamente il modulo della formazione. La somma totale dei componenti deve essere 10 (portiere escluso).</p>
+                        <form class="form-horizontal form-bordered" action="" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <div class="text-danger">{{ form.non_field_errors }}</div>
+                                <label class="col-md-3 control-label" for="inputDefault" required>Difensori</label>
+                                <div class="col-md-2">
+                                    {{ form.difensori }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="inputDefault" required>Centrocampisti</label>
+                                <div class="col-md-6">
+                                    {{ form.centrocampisti }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="inputDefault" required>Attaccanti</label>
+                                <div class="col-md-6">
+                                    {{ form.attaccanti }}
+                                </div>
+                            </div>
+        
+                        
+                    </div>
+                    <footer class="panel-footer center">
+                        <input type="submit" id="submit" value="Seleziona modulo" class="btn btn-primary"></button>
+                    </footer>
+                </form>
+                </section>
+</section>
+
+{% endblock %}

@@ -2,6 +2,7 @@ from webbrowser import get
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import CreateView, UpdateView, ListView
+from django.forms import formset_factory
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -12,7 +13,7 @@ from gestionecampionato.commandpattern.invoker import Invoker
 from gestionecampionato.commandpattern.generacalendariocommand import GeneraCalendarioCommand
 from gestionecampionato.commandpattern.receiver import Receiver
 
-from gestionecampionato.forms import CreaCampionatoForm, ModificaCampionatoForm
+from gestionecampionato.forms import CreaCampionatoForm, ModificaCampionatoForm, SelezionaModuloForm, TitolariForm
 from gestionesquadra.models import Squadra
 from core.decorators import check_user_permission_ca, check_ca_belonging
 from .models import Campionato
@@ -60,4 +61,50 @@ class GeneraCalendarioView(View):
         campionato = Campionato.objects.get(championship_admin=user) # Prendo il campionato
         championship_teams = Squadra.objects.filter(campionato=campionato)
         return render(request, self.template_name, context={'championship_teams': championship_teams})
+
+
+class SelezionaModuloView(View):
+    """Classe View per selezionare il modulo della formazione titolare"""
+    template_name = 'front/pages/gestionecampionato/seleziona-modulo.html'
+
+    def post(self, request, *args, **kwargs):
+        form = SelezionaModuloForm(request.POST)
+        if form.is_valid():
+            return redirect('gestionecampionato:inserisci_titolari', d=form.cleaned_data['difensori'],
+                                                                     c=form.cleaned_data['centrocampisti'],
+                                                                     a=form.cleaned_data['attaccanti'])
+        return render(request, self.template_name, context={'form': form})
+
+    def get(self, request, *args, **kwargs):
+        form = SelezionaModuloForm
+        return render(request, self.template_name, context={'form': form})
+
+
+class InserisciFormazioneTitolariView(View):
+    """Classe View per inserire la formazione titolare"""
+    template_name = 'front/pages/gestionecampionato/inserisci-titolari.html'
+
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+
+    def get(self, request, d:int, c: int, a: int):
+        """Ulteriore controllo sul totale dei giocatori selezionati nel modulo"""
+        if (d+c+a) != 10:
+            messages.error(request, 'La somma del modulo non è uguale a 10!')
+            return redirect('gestionecampionato:seleziona_modulo')
+        
+        PortieriFormSet = formset_factory(TitolariForm)
+        DifensoriFormSet = formset_factory(TitolariForm, extra=d)
+        CentrocampistiFormSet = formset_factory(TitolariForm, extra=c)
+        AttaccantiFormSet = formset_factory(TitolariForm, extra=a)
+
+        portieri_formset = PortieriFormSet(form_kwargs={'squadra': request.user.squadra, 'ruolo': 'P'}, prefix='portiere')
+        difensori_formset = DifensoriFormSet(form_kwargs={'squadra': request.user.squadra, 'ruolo': 'D'}, prefix='difensori')
+        centrocampisti_formset = CentrocampistiFormSet(form_kwargs={'squadra': request.user.squadra, 'ruolo': 'C'}, prefix='centrocampisti')
+        attaccanti_formset = AttaccantiFormSet(form_kwargs={'squadra': request.user.squadra, 'ruolo': 'A'}, prefix='attaccanti')
     
+        
+        return render(request, self.template_name, context={'form_portiere': portieri_formset,
+                                                            'form_difensori': difensori_formset,
+                                                            'form_centrocampisti': centrocampisti_formset,
+                                                            'form_attaccanti': attaccanti_formset})

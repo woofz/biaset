@@ -3,14 +3,17 @@ from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.views.generic.base import View
 from django.contrib import messages
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import sessions
+from gestionesquadra.models import Squadra
 from .models import Invito
 from .forms import CreaInvitoForm
 from .strategyclasses.strategy import Context, Strategy
 from .strategyclasses.allenatorestrategy import AllenatoreStrategy
 from .strategyclasses.castrategy import CaStrategy
 from .strategyclasses.invitenotfound import InviteNotFoundException
+from .models import Profilo
 from django.contrib.auth import logout
 from core.decorators import check_if_profile_exists, check_user_permission_ca
 from django.utils.decorators import method_decorator
@@ -31,18 +34,22 @@ class StrategyRegistrationView(View):
     """Definisce la vista di registrazione tramite Strategy pattern"""
     error_template_name = "front/error.html"
     strategy_context = Context(CaStrategy())
+    redir = 'gestionecampionato:inserisci_campionato'
 
     @method_decorator(check_if_profile_exists)
     def get(self, request, regtype: str):
         error = 'Invito non valido o non esistente.'
         if regtype == 'allenatore':
             self.strategy_context = Context(AllenatoreStrategy())
+            self.redir = 'dashboard_index'
         utente = User.objects.get(pk=request.user.pk)
         try:
             if self.strategy_context.doOperation(utente):
+                profilo = Profilo.objects.get(user=utente)
+                request.session['profilo'] = profilo.nome
                 messages.success(
                     request, 'Registrazione avvenuta con successo!')
-                return redirect(reverse('dashboard_index'))
+                return redirect(reverse(self.redir))
         except InviteNotFoundException:
             pass
 
@@ -77,3 +84,10 @@ class InviteCreateView(SuccessMessageMixin, CreateView):
     form_class = CreaInvitoForm
     success_url = reverse_lazy('dashboard_index')
     success_message = 'Invito creato correttamente!'
+
+
+@method_decorator(decorators_ca, name='dispatch')
+class ListUtentiView(ListView):
+    model = User
+    template_name = "front/pages/gestioneutenza/list-utenti.html"
+    usr = User.objects.select_related('squadra').all()

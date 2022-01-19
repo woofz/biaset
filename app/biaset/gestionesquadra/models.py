@@ -1,12 +1,12 @@
+from email.policy import default
 from django.db import models
 from django.db.models.fields import related
-from gestionecampionato.models import Campionato
 from django.contrib.auth.models import User
 
 class Squadra(models.Model):
     nome = models.CharField(max_length=50, verbose_name="Nome squadra")
-    campionato = models.ForeignKey(Campionato, verbose_name="Campionato", on_delete=models.CASCADE)
-    allenatore = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Allenatore', blank=True, null=True)
+    campionato = models.ForeignKey('gestionecampionato.Campionato', verbose_name="Campionato", on_delete=models.CASCADE)
+    allenatore = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Allenatore', blank=True, null=True, related_name='squadra')
     
     def __str__(self):
         return f"{self.nome}"
@@ -16,13 +16,27 @@ class Squadra(models.Model):
 
 
 class Giocatore(models.Model):
-    nome = models.CharField(max_length=255, blank=True, null=True, verbose_name='Nome')
-    cognome = models.CharField(max_length=255, blank=True, null=True, verbose_name='Cognome')
+    PLAYER_ROLES = [
+        ('P', 'Portiere'), 
+        ('D', 'Difensore'), 
+        ('C', 'Centrocampista'), 
+        ('A', 'Attaccante')
+    ]
+    nome_completo = models.CharField(max_length=255, blank=True, null=True, verbose_name='Cognome')
+    ruolo = models.CharField(
+        max_length=1,
+        choices=PLAYER_ROLES,
+        default='T',
+        verbose_name='Ruolo',
+        blank=True,
+        null=True
+    )
     id_voti = models.IntegerField(verbose_name='ID Voti Fantacalcio.it')
+    quotazione = models.IntegerField(verbose_name='Quotazione', default=0)
     squadra = models.ManyToManyField(Squadra)
     
     def __str__(self) -> str: 
-        return f"{self.nome} {self.cognome}"
+        return f"{self.nome_completo} [{self.ruolo}]"
     
     class Meta:
         verbose_name_plural = 'Giocatori'

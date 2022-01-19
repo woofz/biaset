@@ -1,0 +1,11 @@
+<h1>Titoloni!</h1>
+
+<form method="post">
+    {% csrf_token %}
+
+    {{ form_portiere.as_p }}
+    {{ form_difensori.as_p }}
+    {{ form_centrocampisti.as_p }}
+    {{ form_attaccanti.as_p }}
+    <input type="submit" value="Test!">
+</form>

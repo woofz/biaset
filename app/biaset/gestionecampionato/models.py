@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
+
 class Campionato(models.Model):
     """Campionato Entity"""
     championship_admin = models.ForeignKey(User, verbose_name='Championship Admin', blank=True, null=True, on_delete=models.CASCADE)
@@ -40,3 +41,23 @@ class Partita(models.Model):
         squadra2 = self.squadra.all().last()
         
         return f"{squadra1.campionato} - {squadra1} vs {squadra2}"
+
+
+class Formazione(models.Model):
+    """Formazione Entity"""
+    FORMATION_TYPES_CHOICES = [('T', 'Titolari'), ('R', 'Riserve')]
+    tipo = models.CharField(
+        max_length=2,
+        choices=FORMATION_TYPES_CHOICES,
+        default='T',
+        verbose_name='Gruppo (Titolare/Riserva)'
+    )
+    giocatore = models.ManyToManyField('gestionesquadra.Giocatore', verbose_name='Giocatore', related_name='giocatore')
+    partita = models.ForeignKey(Partita, on_delete=models.CASCADE, verbose_name='Partita', related_name='formazione')
+    data_inserimento = models.DateTimeField(auto_now_add=True, verbose_name='Data inserimento formazione', blank=True, null=True)
+
+    def __str__(self) -> str:
+        return f"{self.partita} - {self.get_tipo_display()}"
+
+    class Meta:
+        verbose_name_plural = 'Formazioni'
