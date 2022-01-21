@@ -20,12 +20,29 @@ class HomeView(View):
         profilo = None or Profilo.objects.filter(user=utente).first()
         if not profilo:
             return redirect(reverse('gestioneutenza:registrazione'))
-        #squadra = Squadra.objects.filter(allenatore=utente).first()
+    
         if not request.session.get('profilo'):
             request.session['profilo'] = profilo.nome # Setto la variabile di sessione per il profilo
+        if not request.session.get('campionato'):
+            self.set_session_variables(request, user=utente)
         
+        squadre_campionato = Squadra.objects.filter(campionato__id=request.session.get('campionato_id'))
         return render(request, self.template_name, context={'profilo': profilo,
-                                                            'utente': utente,})
+                                                            'utente': utente,
+                                                            'campionato_id': request.session.get('campionato_id'),
+                                                            'squadra_id': request.session.get('squadra_id'),
+                                                            'squadre': squadre_campionato})
+        
+    def set_session_variables(self, request, user: User):
+        profilo = request.session.get('profilo')
+        squadra = None or Squadra.objects.filter(allenatore=user).first()
+        if profilo == 'Championship Admin':
+            request.session['campionato_id'] = Campionato.objects.filter(championship_admin=user).first().id
+        elif profilo == 'Allenatore': 
+            request.session['squadra_id'] = None or squadra.id
+            request.session['campionato_id'] = None or squadra.campionato.id
+        request.session['giornata_corrente'] = Campionato.objects.filter(pk=request.session['campionato_id']).first().giornata_corrente
+
 
 
 class LoginView(View):

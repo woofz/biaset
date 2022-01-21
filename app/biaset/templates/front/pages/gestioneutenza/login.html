@@ -1,5 +1,7 @@
 {% load static %}
 {% load socialaccount %}
+{% providers_media_js %}
+
 <!doctype html>
 <html class="fixed">
 	<head>
@@ -56,8 +58,9 @@
 						<form action="index.html" method="post">
 						<p class="center"><strong>Seleziona un Social col quale effettuare il login</strong></p>
 							<div class="mb-xs text-center">
-								<a href="{% provider_login_url "google" %}"" class="btn btn-primary mb-md ml-xs mr-xs">Login con Google <i class="fab fa-google"></i></a>
-								<a href="{% provider_login_url "facebook" %}"" class="btn btn-facebook mb-md ml-xs mr-xs">Login con Facebook <i class="fab fa-facebook"></i></a>
+								<a href="{% provider_login_url "google" %}" class="btn btn-primary mb-md ml-xs mr-xs">Login con Google <i class="fab fa-google"></i></a>
+								
+								<a href="{% provider_login_url "facebook" method="js_sdk" %}" class="btn btn-facebook mb-md ml-xs mr-xs">Login con Facebook<i class="fab fa-facebook"></i></a>
 							</div>
 						</form>
 					</div>

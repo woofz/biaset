@@ -52,7 +52,7 @@ class Formazione(models.Model):
         default='T',
         verbose_name='Gruppo (Titolare/Riserva)'
     )
-    giocatore = models.ManyToManyField('gestionesquadra.Giocatore', verbose_name='Giocatore', related_name='giocatore')
+    giocatore = models.ManyToManyField('gestionesquadra.Giocatore', verbose_name='Giocatore', related_name='formazione', blank=True)
     partita = models.ForeignKey(Partita, on_delete=models.CASCADE, verbose_name='Partita', related_name='formazione')
     data_inserimento = models.DateTimeField(auto_now_add=True, verbose_name='Data inserimento formazione', blank=True, null=True)
 

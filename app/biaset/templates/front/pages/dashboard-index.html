@@ -64,27 +64,27 @@
 									</div>
 								</div>
 						</div>
-						<div class="col-lg-6 col-md-12">
+						<div class="col-lg-4 col-md-12">
 							<section class="panel">
 								<header class="panel-heading">
-									<h2 class="panel-title">Membri del campionato</h2>
+									<h2 class="panel-title">Squadre del campionato</h2>
 								</header>
 								<div class="panel-body">
 									<div class="table-responsive">
 										<table class="table table-striped mb-none">
 											<thead>
 												<tr>
-													<th>Nome e cognome</th>
-													<th>Ruolo</th>
-													<th>N. di telefono</th>
+													<th>Nome squadra</th>
+													<th>Presidente</th>
 												</tr>
 											</thead>
 											<tbody>
+												{% for squadra in squadre %}
 												<tr>
-													<td>Danilo Trivellone</td>
-													<td><span class="label label-primary">Dipendente</span></td>
-													<td>555-17586</td>
+													<td><a href="{% url 'gestionesquadra:visualizza_squadra' squadra.id %}">{{ squadra.nome }}</a></td>
+													<td><span class="label label-primary">{{ squadra.allenatore.first_name }} {{ squadra.allenatore.last_name }}</span></td>
 												</tr>
+												{% endfor %}
 											</tbody>
 										</table>
 									</div>

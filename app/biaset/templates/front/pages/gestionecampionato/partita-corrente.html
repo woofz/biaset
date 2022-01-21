@@ -1,0 +1,141 @@
+{% extends "front/base.html" %}
+{% block content %}
+    <section role="main" class="content-body">
+        <header class="page-header">
+            <h2>Lista utenti</h2>
+        </header>
+            <div class="row">
+                <div class="col-md-12">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            <h2 class="panel-title center">{{ partita.squadra.first }} vs {{ partita.squadra.last }}</h2>
+                        </header>
+                        <div class="panel-body">
+                            <p class="center">Risultato parziale: <h1 class="center"><strong>0-0</strong></h1></p>
+                            <div class="col-md-3"></div>
+                            <div class="col-md-3">
+                                <div class="table-responsive">
+                                <table class="table table-hover mb-none">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4" class="center">{{ partita.squadra.first }} - Titolari</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Giocatore</th>
+                                            <th>Ruolo</th>
+                                            <th>Gol</th>
+                                            <th>Voto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        </tr>
+                                        {% for giocatore in titolari_prima_squadra %}
+                                        <tr>
+                                            <td>{{ giocatore.nome_completo }}</td>
+                                            <td>{{ giocatore.ruolo }}</td>
+                                            <td>0</td>
+                                            <td>s.v.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                            <div class="col-md-3">
+                                <div class="table-responsive">
+                                <table class="table table-hover mb-none">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4" class="center">{{ partita.squadra.last }} - Titolari</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Giocatore</th>
+                                            <th>Ruolo</th>
+                                            <th>Gol</th>
+                                            <th>Voto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        </tr>
+                                        {% for giocatore in titolari_seconda_squadra %}
+                                        <tr>
+                                            <td>{{ giocatore.nome_completo }}</td>
+                                            <td>{{ giocatore.ruolo }}</td>
+                                            <td>0</td>
+                                            <td>s.v.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="col-md-3"></div>
+                                <div class="col-md-3">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover mb-none">
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="4" class="center">Riserve</th>
+                                                </tr>
+                                                <tr>
+                                                    <th>Giocatore</th>
+                                                    <th>Ruolo</th>
+                                                    <th>Gol</th>
+                                                    <th>Voto</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                </tr>
+                                                {% for giocatore in riserve_prima_squadra %}
+                                                <tr>
+                                                    <td>{{ giocatore.nome_completo }}</td>
+                                                    <td>{{ giocatore.ruolo }}</td>
+                                                    <td>0</td>
+                                                    <td>s.v.</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover mb-none">
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="4" class="center">Riserve</th>
+                                                </tr>
+                                                <tr>
+                                                    <th>Giocatore</th>
+                                                    <th>Ruolo</th>
+                                                    <th>Gol</th>
+                                                    <th>Voto</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                </tr>
+                                                {% for giocatore in riserve_seconda_squadra %}
+                                                <tr>
+                                                    <td>{{ giocatore.nome_completo }}</td>
+                                                    <td>{{ giocatore.ruolo }}</td>
+                                                    <td>0</td>
+                                                    <td>s.v.</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div></div>
+                                <div class="col-md-3"></div>
+                            </div>
+                        </div>
+                </div>
+            </section>
+        </section>
+    </div>
+
+{% endblock %}

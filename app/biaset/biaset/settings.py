@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+from django.urls.base import reverse_lazy
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,6 +34,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
+    'django_filters',
     
     'datetimewidget',
     'ckeditor',
@@ -139,7 +141,7 @@ STATICFILES_DIRS = ( os.path.join('static'), )
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Login
-LOGIN_URL = 'gestioneutenza/login/'
+LOGIN_URL = reverse_lazy('gestioneutenza:login_view')
 
 
 # All Auth Providers
@@ -153,8 +155,14 @@ SOCIALACCOUNT_PROVIDERS = {
             'access_type': 'online',
             'type': 'la',
         }
+    },
+    'facebook': {
+        'SCOPE': ['email', 'public_profile'],
+        'AUTH_PARAMS': {},
+        'METHOD': 'js_sdk',
     }
 }
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # Email Backend
 # For PRODUCTION 

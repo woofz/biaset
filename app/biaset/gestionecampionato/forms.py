@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django import forms
 from gestionesquadra.models import Giocatore, Squadra
 
-from gestionecampionato.models import Campionato
+from gestionecampionato.models import Campionato, Partita
 
 class CreaCampionatoForm(forms.ModelForm):
     
@@ -53,11 +53,94 @@ class SelezionaModuloForm(forms.Form):
   
 
 class TitolariForm(forms.Form):
-    giocatore = forms.ModelChoiceField(queryset=Giocatore.objects.none())
-
+    """Form per l'inserimento della formazione [sia titolare sia riserve]"""
+    giocatore = forms.ModelChoiceField(queryset=Giocatore.objects.none(), required=True)
+    
     def __init__(self, *args, **kwargs):
         squadra = kwargs.pop('squadra', None)
         ruolo = kwargs.pop('ruolo', None)
 
         super(TitolariForm, self).__init__(*args, **kwargs)
-        self.fields['giocatore'].queryset = Giocatore.objects.filter(squadra=squadra).filter(ruolo=ruolo)
+        self.fields['giocatore'].queryset = Giocatore.objects.filter(squadra=squadra).filter(ruolo=ruolo).exclude()
+
+    def save(self, commit=True, *args, **kwargs):
+        """Metodo save personalizzato. Non salva un vero e proprio modello, ma aggiunge la relazione tra Formazione e Giocatore"""
+        formazione = kwargs.pop('formazione')
+        instance = self.cleaned_data['giocatore']
+        formazione.giocatore.add(instance)
+        
+        return instance
+
+
+class TitolariFormSet(forms.BaseFormSet):
+    """Classe FormSet per il controllo di form multipli per inserimento della formazione"""
+    def clean(self):
+        """Il metodo serve per la validazione del FormSet
+
+        Raises:
+            ValidationError: nel caso in cui il campo fosse vuoto
+            ValidationError: nel caso in cui vi sia un giocatore duplicato
+        """
+        super(TitolariFormSet, self).clean()
+        
+        lista = list()
+        form_size = 0
+        
+        for form in self.forms:
+            cleaned_data = form.cleaned_data
+            if not cleaned_data:
+                raise ValidationError('Tutti i campi sono obbligatori')
+            lista.append(cleaned_data)
+            form_size += 1
+        lista_senza_duplicati = [dict(t) for t in {tuple(d.items()) for d in lista}]
+        
+        if form_size > len(lista_senza_duplicati):
+            raise ValidationError('Hai inserito giocatori duplicati!')
+
+
+class RiserveForm(forms.Form):
+    """Form per l'inserimento della formazione [sia titolare sia riserve]"""
+    giocatore = forms.ModelChoiceField(queryset=Giocatore.objects.none(), required=True)
+    
+    def __init__(self, *args, **kwargs):
+        squadra = kwargs.pop('squadra', None)
+        ruolo = kwargs.pop('ruolo', None)
+        formazione_titolari = kwargs.pop('titolari', None)
+
+        super(RiserveForm, self).__init__(*args, **kwargs)
+        giocatori_per_ruolo = Giocatore.objects.filter(squadra=squadra).filter(ruolo=ruolo)
+
+        self.fields['giocatore'].queryset = giocatori_per_ruolo.exclude(id__in=formazione_titolari.giocatore.all()) # Escludo i titolari dalle scelte delle riserve
+        
+    def save(self, commit=True, *args, **kwargs):
+        """Metodo save personalizzato. Non salva un vero e proprio modello, ma aggiunge la relazione tra Formazione e Giocatore"""
+        formazione = kwargs.pop('formazione')
+        instance = self.cleaned_data.get('giocatore')
+        formazione.giocatore.add(instance)
+        
+        return instance
+    
+    
+class RiserveFormSet(forms.BaseFormSet):
+    """Classe FormSet per il controllo di form multipli per inserimento della formazione"""
+    def clean(self):
+        """Il metodo serve per la validazione del FormSet
+
+        Raises:
+            ValidationError: nel caso in cui il campo fosse vuoto
+            ValidationError: nel caso in cui vi sia un giocatore duplicato
+        """
+        super(RiserveFormSet, self).clean()
+        
+        lista = list()
+        form_size = 0
+        
+        for form in self.forms:
+            cleaned_data = form.cleaned_data
+            if cleaned_data:    
+                lista.append(cleaned_data)
+                form_size += 1
+        lista_senza_duplicati = [dict(t) for t in {tuple(d.items()) for d in lista}]
+        
+        if form_size > len(lista_senza_duplicati):
+            raise ValidationError('Hai inserito giocatori duplicati!')

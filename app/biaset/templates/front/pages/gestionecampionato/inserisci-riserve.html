@@ -1,35 +1,17 @@
 {% extends 'front/base.html' %}
-
-
-<h1>Titoloni!</h1>
-
-<form method="post">
-    {% csrf_token %}
-    {{ form_portiere.non_form_errors }}
-    {{ form_difensori.non_form_errors }}
-    {{ form_centrocampisti.non_form_errors }}
-    {{ form_attaccanti.non_form_errors }}
-
-    {{ form_portiere.as_p }}
-    {{ form_difensori.as_p }}
-    {{ form_centrocampisti.as_p }}
-    {{ form_attaccanti.as_p }}
-
-    <input type="submit" value="Test!">
-</form>
 {% block content %}
 <section role="main" class="content-body">
     <header class="page-header">
-        <h2>Seleziona Formazione Titolare</h2>
+        <h2>Seleziona Formazione Riserve</h2>
     </header>
         <div class="row">
             <div class="col-md-12">
                 <section class="panel">
                     <header class="panel-heading">   
-                        <h2 class="panel-title">Seleziona titolari <strong>{{ modulo }}</strong></h2>
+                        <h2 class="panel-title">Seleziona riserve</strong></h2>
                     </header>
                     <div class="panel-body">
-                        <p class="center">Seleziona accuratamente la formazione titolare. Non sono ammessi giocatori duplicati o mancanti</p>
+                        <p class="center">Seleziona accuratamente la formazione riserve. Non sono ammessi giocatori duplicati o mancanti. Ricorda che la posizione incide sull'ordine di ingresso in campo nel caso in cui un titolare non giocasse!</p>
                         <form class="form-horizontal form-bordered" action="" method="post">
                             {% csrf_token %}
                             <div class="form-group">
@@ -76,7 +58,7 @@
                         
                     </div>
                     <footer class="panel-footer center">
-                        <input type="submit" id="submit" value="Seleziona modulo" class="btn btn-primary"></button>
+                        <input type="submit" id="submit" value="Inserisci riserve" class="btn btn-primary"></button>
                     </footer>
                 </form>
                 </section>

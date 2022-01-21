@@ -1,39 +1,36 @@
 {% extends "front/base.html" %}
+
 {% block content %}
+<div class=""
+    <h2>Calendario</h2>
     <section role="main" class="content-body">
         <header class="page-header">
-            <h2>Lista utenti</h2>
+            <h2>Calendario</h2>
         </header>
             <div class="row">
                 <div class="col-md-12">
                     <section class="panel">
                         <header class="panel-heading">
-                            <h2 class="panel-title">Utenti</h2>
+                            <h2 class="panel-title">Calendario</h2>
                         </header>
                         <div class="panel-body">
-                            <p>Di seguito una lista degli utenti iscritti alla piattaforma</p>
+                            <p>Lista contenente tutti gli incontri del campionato</p>
                             <div class="col-md-6">
                                 <div class="table-responsive">
                                 <table class="table table-hover mb-none">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
-                                            <th>Nome</th>
-                                            <th>Cognome</th>
-                                            <th>Campionato</th>
-                                            <th>Squadra</th>
-                                            <th>Cancella</th>
+                                            <th>Giornata</th>
+                                            <th>Scontro</th>
+                                            <th>Visualizza</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for utente in object_list %}
+                                        {% for match in object_list %}
                                         <tr>
-                                            <td>{{ utente.id }}</td>
-                                            <td>{{ utente.first_name }}</td>
-                                            <td>{{ utente.last_name }}</td>
-                                            <td>{{ utente.squadra.campionato }}</td>
-                                            <td>{{ utente.squadra.nome }}</td>
-                                            <td></td>
+                                            <td><strong>{{ match.giornata }}</strong></td>
+                                            <td><strong>{{ match.squadra.first }}</strong> vs <strong>{{ match.squadra.last }}</strong></td>
+                                            <td><a href="{% url 'gestionecampionato:visualizza_partita' match.id %}"><i class="fas fa-search"></i></a></td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>

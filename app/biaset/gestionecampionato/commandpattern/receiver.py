@@ -1,6 +1,6 @@
 # Setting up Django Env
 from typing import List
-from gestionecampionato.models import Campionato, Partita
+from gestionecampionato.models import Campionato, Partita, Formazione
 from gestionesquadra.models import Squadra
 from competitions.scheduler.roundrobin import RoundRobinScheduler
 import django
@@ -42,9 +42,12 @@ class Receiver:
         scheduling = scheduler.generate_schedule()
         # Creo le entità Partita per ogni match generato
         for i in range(0, len(scheduling)):
+            
             for squadra in scheduling[i]:
                 partita = Partita()
                 partita.giornata = i + 1
                 partita.save()
                 partita.squadra.add(squadra[0])
                 partita.squadra.add(squadra[1])
+                Formazione.objects.create(tipo='T', partita=partita)
+                Formazione.objects.create(tipo='R', partita=partita)

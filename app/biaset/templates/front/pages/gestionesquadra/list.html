@@ -1,0 +1,109 @@
+{% extends "front/base.html" %}
+{% block content %}
+
+{% block javascripts %}
+<script>
+    
+    $(document).ready(function(){
+        $('.licenzia').click(function(){
+            let team_id = $(this).val();
+                   Swal.fire({
+                      title: 'Conferma',
+                      text: "Sei sicuro di voler licenziare il giocatore?",
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'Si'
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                          $.ajax({
+                            url: '{% url 'gestionesquadra:licenzia_giocatore_ajax' %}',
+                            data: {
+                              'giocatore_id': $(this).val(),
+                              'squadra_id': {{ squadra.id }},
+                            },
+                            dataType: 'json',
+                            success: function(data) {
+                                Swal.fire(
+                                    'Licenziato!',
+                                    'Il giocatore è stato licenziato!.',
+                                    'success'
+                                );
+                                $('#'+team_id).closest("tr").hide();
+                            }
+                          });
+                      }
+                   });
+            });
+        });
+</script>
+{% endblock javascripts %}
+    <section role="main" class="content-body">
+        <header class="page-header">
+            <h2>Visualizza squadra</h2>
+        </header>
+            <div class="row">
+                <div class="col-md-12">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            <h2 class="panel-title">{{ squadra.nome }}</h2>
+                        </header>
+                        <div class="panel-body">
+                            <p>Di seguito è listata la lista dei giocatori della squadra. Nel caso in cui fossi il proprietario, potrai licenziare qualsiasi giocatore tu voglia.</p>
+                            <div class="col-md-6">
+                                <div class="table-responsive">
+                                <table class="table table-hover mb-none">
+                                    <thead>
+                                        <tr>
+                                            <th>Nome Completo</th>
+                                            <th>Ruolo</th>
+                                            <th>Quotazione</th>
+                                            {% if ownership %}<th>Licenzia</th>{% endif %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for giocatore in giocatori %}
+                                        <tr id="{{ giocatore.id }}">
+                                            <td>{{ giocatore.nome_completo }}</td>
+                                            <td>{{ giocatore.ruolo }}</td>
+                                            <td>{{ giocatore.quotazione }}</td>
+                                            {% if ownership %}<td><button value="{{ giocatore.id }}" class="mb-xs mt-xs mr-xs btn btn-danger licenzia"><i class="fas fa-minus-circle"></i></a></td>{% endif %}
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-6">
+                            <section class="panel panel-featured-left panel-featured-secondary">
+											<div class="panel-body">
+												<div class="widget-summary">
+													<div class="widget-summary-col widget-summary-col-icon">
+														<div class="summary-icon bg-secondary">
+															<i class="fa fa-usd"></i>
+														</div>
+													</div>
+													<div class="widget-summary-col">
+														<div class="summary">
+															<h4 class="title">Stipendi da pagare</h4>
+															<div class="info">
+																<strong class="amount">{{ stipendi }} MILIONI DI EURO</strong>
+															</div>
+														</div>
+                                                        <div class="summary-footer">
+                                                            <a class="text-muted text-uppercase">Il calcolo è dato dalla somma totale delle quotazioni/40</a>
+                                                        </div>
+													</div>
+
+												</div>
+											</div>
+										</section>
+                    </section>
+                </div>
+                </section>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

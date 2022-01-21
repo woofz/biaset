@@ -24,7 +24,6 @@
 		<link rel="stylesheet" href="{% static 'assets/vendor/bootstrap-datepicker/css/datepicker3.css' %}" />
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 
-		<!-- Specific Page Vendor CSS -->
 		<link rel="stylesheet" href="{% static 'assets/vendor/jquery-ui/css/ui-lightness/jquery-ui-1.10.4.custom.css' %}" />
 		<link rel="stylesheet" href="{% static 'assets/vendor/bootstrap-multiselect/bootstrap-multiselect.css' %}" />
 		<link rel="stylesheet" href="{% static 'assets/vendor/morris/morris.css' %}" />
@@ -56,14 +55,15 @@
 				<!-- start: sidebar -->
 				{% include "front/includes/base/sidebar-left.html" %}
 				<!-- end: sidebar -->
-				
+				<!-- Vendors-->
+				{% include "front/includes/base/vendor.html" %}
+				<!-- END Vendors -->
+				<!-- Specific Page Vendor CSS -->
 				<!-- Page -->
 				{% block content %} {% endblock %}
 				<!-- End page content -->
 			</div>
-<!-- Vendors-->
-{% include "front/includes/base/vendor.html" %}
-<!-- END Vendors -->
+
 
 </div>
 </section>

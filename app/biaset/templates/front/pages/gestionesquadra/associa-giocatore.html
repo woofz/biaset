@@ -1,0 +1,40 @@
+
+{% extends 'front/base.html' %}
+
+{% block content %}
+<section role="main" class="content-body">
+    <header class="page-header">
+        <h2>Associa giocatore a squadra</h2>
+    </header>
+        <div class="row">
+            <div class="col-md-12">
+                <section class="panel">
+                    <header class="panel-heading">   
+                        <h2 class="panel-title">Associa giocatore</h2>
+                    </header>
+                    <div class="panel-body">
+                        <p class="center">Seleziona il giocatore e la squadra di destinazione.</p>
+                        <form class="form-horizontal form-bordered" action="" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <div class="text-danger">{{ form.errors }}</div>
+                                <label class="col-md-3 control-label" for="inputDefault" required>Giocatore</label>
+                                <div class="col-md-2">
+                                    {{ form.giocatore }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="inputDefault" required>Squadra di destinazione</label>
+                                <div class="col-md-6">
+                                    {{ form.squadra }}
+                                </div>
+                            </div>                       
+                    </div>
+                    <footer class="panel-footer center">
+                        <input type="submit" id="submit" value="Seleziona modulo" class="btn btn-primary"></button>
+                    </footer>
+                </form>
+                </section>
+</section>
+
+{% endblock %}

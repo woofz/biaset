@@ -6,7 +6,7 @@
     </a>
     <ul class="nav nav-children">
         <li>
-            <a href="pages-signup.html">
+            <a href="{% url 'gestionecampionato:seleziona_modulo' %}">
                  Inserisci formazione
             </a>
         </li>
@@ -15,18 +15,19 @@
                  Modifica formazione
             </a>
         </li>
+        {% if request.session.profilo == 'Allenatore' %}
         <li>
-            <a href="pages-signup.html">
-                 Visualizza giornata corrente
+            <a href="{% url 'gestionecampionato:visualizza_partita' request.session.giornata_corrente %}">
+                 Visualizza partita corrente
             </a>
         </li>
-
-        {% if request.session.profilo == 'Championship Admin'%}
+        {% endif %}
+        {% if request.session.profilo == 'Championship Admin' and request.session.campionato_id %}
         <li>
-            
+            <a href="{% url 'gestionecampionato:modifica_campionato' request.session.campionato_id %}">
                  Modifica nome campionato
             </a>
-        </li>       
+        </li>  
         {% endif %}
 
         {% if request.session.profilo == 'League Admin'%}

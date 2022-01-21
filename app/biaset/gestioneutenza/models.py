@@ -4,6 +4,7 @@ from django.db.models.base import ModelBase
 from django.db.models.fields.related import ManyToManyField
 from gestionecampionato.models import Campionato
 
+
 class Profilo(models.Model):
     nome = models.CharField(max_length=255, verbose_name='Tipo profilo')
     user = ManyToManyField(User, verbose_name='Utente', blank=True, related_name='user')
@@ -13,7 +14,7 @@ class Profilo(models.Model):
 
     def __str__(self) -> str:
         return self.nome
-        
+
 
 class Invito(models.Model):
     user = models.ForeignKey(User, verbose_name="Creato da", on_delete=models.CASCADE)

@@ -1,0 +1,3 @@
+coverage run --branch --source="gestionecampionato,gestioneutenza,gestionesquadra"  manage.py test
+coverage report -m
+coverage html
