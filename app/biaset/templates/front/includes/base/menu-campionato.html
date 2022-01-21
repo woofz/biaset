@@ -7,12 +7,12 @@
     <ul class="nav nav-children">
         <li>
             <a href="{% url 'gestionecampionato:seleziona_modulo' %}">
-                 Inserisci formazione
+                 Inserisci/modifica formazione
             </a>
         </li>
         <li>
-            <a href="pages-signup.html">
-                 Modifica formazione
+            <a href="{% url 'gestionecampionato:visualizza_calendario' %}">
+                 Visualizza calendario scontri
             </a>
         </li>
         {% if request.session.profilo == 'Allenatore' %}

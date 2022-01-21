@@ -1,8 +1,7 @@
-from email.policy import default
-from tabnanny import verbose
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from gestionesquadra.models import Squadra
 
 
 class Campionato(models.Model):
@@ -55,6 +54,7 @@ class Formazione(models.Model):
     giocatore = models.ManyToManyField('gestionesquadra.Giocatore', verbose_name='Giocatore', related_name='formazione', blank=True)
     partita = models.ForeignKey(Partita, on_delete=models.CASCADE, verbose_name='Partita', related_name='formazione')
     data_inserimento = models.DateTimeField(auto_now_add=True, verbose_name='Data inserimento formazione', blank=True, null=True)
+    squadra = models.ForeignKey(Squadra, on_delete=models.CASCADE, verbose_name='Squadra', related_name='formazione', blank=True, null=True)
 
     def __str__(self) -> str:
         return f"{self.partita} - {self.get_tipo_display()}"

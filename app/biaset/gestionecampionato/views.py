@@ -129,7 +129,9 @@ class InserisciFormazioneTitolariView(View):
                                           'squadra': request.user.squadra, 'ruolo': 'C'}, prefix='centrocampisti')
         form_attaccanti = FormSetBase(request.POST, form_kwargs={
                                       'squadra': request.user.squadra, 'ruolo': 'A'}, prefix='attaccanti')
+        
 
+            
         # Recupero la squadra e il campionato dalla sessione
         squadra = Squadra.objects.get(pk=request.session.get('squadra_id'))
         campionato = squadra.campionato
@@ -138,8 +140,12 @@ class InserisciFormazioneTitolariView(View):
             giornata=campionato.giornata_corrente).first()
 
         formazione_giornata = Formazione.objects.filter(
-            partita=partita).filter(tipo='T').first()
+            partita=partita, squadra=squadra).filter(tipo='T').first()
 
+        if formazione_giornata.giocatore.exists():
+            print('esiste')
+            formazione_giornata.giocatore.clear()
+            
         if form_portieri.is_valid() and form_difensori.is_valid(
         ) and form_centrocampisti.is_valid() and form_attaccanti.is_valid():
             for form in form_portieri:
@@ -173,7 +179,7 @@ class InserisciRiserveView(View):
         partita = Partita.objects.filter(squadra=squadra).filter(
             giornata=campionato.giornata_corrente).first()
         formazione_giornata = Formazione.objects.filter(
-            partita=partita, tipo='T').first()
+            partita=partita, tipo='T', squadra=squadra).first()
 
         FormSetBase = formset_factory(
             RiserveForm, formset=RiserveFormSet, extra=3)
@@ -201,7 +207,7 @@ class InserisciRiserveView(View):
         partita = Partita.objects.filter(squadra=squadra).filter(
             giornata=campionato.giornata_corrente).first()
         formazione_giornata = Formazione.objects.filter(
-            partita=partita, tipo='T').first()
+            partita=partita, tipo='T', squadra=squadra).first()
 
         FormSetBase = formset_factory(RiserveForm, formset=RiserveFormSet)
         form_portieri = FormSetBase(request.POST, form_kwargs={
@@ -214,7 +220,7 @@ class InserisciRiserveView(View):
                                       'squadra': request.user.squadra, 'ruolo': 'A', 'titolari': formazione_giornata}, prefix='attaccanti')
 
         riserve_giornata = Formazione.objects.filter(
-            partita=partita, tipo='R').first()
+            partita=partita, tipo='R', squadra=squadra).first()
 
         if form_portieri.is_valid() and form_difensori.is_valid(
         ) and form_centrocampisti.is_valid() and form_attaccanti.is_valid():
@@ -258,28 +264,29 @@ class VisualizzaCalendarioView(ListView):
 class VisualizzaPartitaView(View):
     template_name = 'front/pages/gestionecampionato/partita-corrente.html'
 
-    def get(self, request, giornata: int, *args, **kwargs):
+    def get(self, request, giornata: int, squadra_id: int, *args, **kwargs):
         campionato = Campionato.objects.get(pk=request.session.get('campionato_id'))
         partita = Partita.objects.filter(
             giornata=giornata,
-            squadra__id=request.session.get('squadra_id')).first()
+            squadra__id=squadra_id).first()
         
-        print(partita)
         # Recupero i titolari e le riserve di entrambe le squadre
         try:
-            titolari_prima_squadra = Formazione.objects.filter(tipo='T', partita=partita).filter(
-                giocatore__squadra__id=partita.squadra.first().id).first().giocatore.all().order_by('gestionecampionato_formazione_giocatore.id')
-            riserve_prima_squadra = Formazione.objects.filter(tipo='R', partita=partita).filter(
-                giocatore__squadra__id=partita.squadra.first().id).first().giocatore.all().order_by('gestionecampionato_formazione_giocatore.id')
+            titolari_prima_squadra = Formazione.objects.filter(tipo='T', partita=partita, squadra__id=partita.squadra.first().id).first().giocatore.all() \
+                                     .order_by('gestionecampionato_formazione_giocatore.id')
+            riserve_prima_squadra = Formazione.objects.filter(tipo='R', partita=partita, squadra__id=partita.squadra.first().id).first().giocatore.all() \
+                                     .order_by('gestionecampionato_formazione_giocatore.id')
+
         except AttributeError:
             titolari_prima_squadra = ''
             riserve_prima_squadra = ''
 
         try:
-            titolari_seconda_squadra = Formazione.objects.filter(tipo='T', partita=partita).filter(
-                giocatore__squadra__id=partita.squadra.last().id).first().giocatore.all().order_by('gestionecampionato_formazione_giocatore.id')
-            riserve_seconda_squadra = Formazione.objects.filter(tipo='R', partita=partita).filter(
-                giocatore__squadra__id=partita.squadra.last().id).first().giocatore.all().order_by('gestionecampionato_formazione_giocatore.id')
+            titolari_seconda_squadra = Formazione.objects.filter(tipo='T', partita=partita, squadra__id=partita.squadra.last().id).first().giocatore.all() \
+                                     .order_by('gestionecampionato_formazione_giocatore.id')
+            riserve_seconda_squadra = Formazione.objects.filter(tipo='R', partita=partita, squadra__id=partita.squadra.last().id).first().giocatore.all() \
+                                     .order_by('gestionecampionato_formazione_giocatore.id')
+
         except AttributeError:
             titolari_seconda_squadra = ''
             riserve_seconda_squadra = ''

@@ -12,5 +12,5 @@ urlpatterns = [
     path('inserisciformazione/titolari/<int:d>/<int:c>/<int:a>/', login_required(InserisciFormazioneTitolariView.as_view()), name='inserisci_titolari'),
     path('inserisciformazione/riserve/', login_required(InserisciRiserveView.as_view()), name='inserisci_riserve'),
     path('calendario/list/', login_required(VisualizzaCalendarioView.as_view()), name='visualizza_calendario'),
-    path('partitacorrente/<giornata>/', login_required(VisualizzaPartitaView.as_view()), name='visualizza_partita'),
+    path('partitacorrente/<giornata>/<squadra_id>/', login_required(VisualizzaPartitaView.as_view()), name='visualizza_partita'),
 ]

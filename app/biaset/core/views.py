@@ -35,12 +35,13 @@ class HomeView(View):
         
     def set_session_variables(self, request, user: User):
         profilo = request.session.get('profilo')
-        squadra = None or Squadra.objects.filter(allenatore=user).first()
+        if Squadra.objects.filter(allenatore=user).exists():
+            squadra = None or Squadra.objects.filter(allenatore=user).first()
         if profilo == 'Championship Admin':
             request.session['campionato_id'] = Campionato.objects.filter(championship_admin=user).first().id
         elif profilo == 'Allenatore': 
-            request.session['squadra_id'] = None or squadra.id
             request.session['campionato_id'] = None or squadra.campionato.id
+        request.session['squadra_id'] = None or squadra.id
         request.session['giornata_corrente'] = Campionato.objects.filter(pk=request.session['campionato_id']).first().giornata_corrente
 
 

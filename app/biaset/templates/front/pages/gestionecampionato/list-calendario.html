@@ -30,7 +30,7 @@
                                         <tr>
                                             <td><strong>{{ match.giornata }}</strong></td>
                                             <td><strong>{{ match.squadra.first }}</strong> vs <strong>{{ match.squadra.last }}</strong></td>
-                                            <td><a href="{% url 'gestionecampionato:visualizza_partita' match.id %}"><i class="fas fa-search"></i></a></td>
+                                            <td><a href="{% url 'gestionecampionato:visualizza_partita' match.giornata match.squadra.first.id  %}"><i class="fas fa-search"></i></a></td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>

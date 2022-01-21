@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django import forms
 from gestionesquadra.models import Giocatore, Squadra
 
-from gestionecampionato.models import Campionato, Partita
+from gestionecampionato.models import Campionato, Partita, Formazione
 
 class CreaCampionatoForm(forms.ModelForm):
     
