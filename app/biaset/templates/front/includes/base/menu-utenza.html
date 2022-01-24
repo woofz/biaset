@@ -12,7 +12,7 @@
         </li>
         {% if request.session.profilo == 'Championship Admin'%}
         <li>
-            <a href="">
+            <a href="{% url 'gestioneutenza:list_utenti' %}?type=campionato">
                  Visualizza utenti campionato
             </a>
         </li>

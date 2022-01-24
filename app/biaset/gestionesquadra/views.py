@@ -1,20 +1,29 @@
 from multiprocessing import context
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.db.models import Sum
 from django.views.generic import ListView, UpdateView
 from .models import Squadra, Giocatore
-from .forms import AssociaGiocatoreForm
+from .forms import AssociaGiocatoreForm, InserisciSquadraForm
 from django.contrib import sessions
 from django.contrib import messages
 from django.http import JsonResponse
 from django.contrib.auth.models import User
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, CreateView
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib import messages
 from gestionecampionato.models import Campionato
-from core.decorators import check_user_permission_ca, check_team_belonging
+from core.decorators import check_user_permission_ca, check_team_belonging, check_user_permission_la_ca, \
+                            check_user_permission_la
+from django.core.exceptions import ObjectDoesNotExist
+
+decorator_la = check_user_permission_la
+decorator_la_ca = check_user_permission_la_ca
+decorators_la = [decorator_la]
+decorators_ca = [check_user_permission_ca]
+
 
 @check_team_belonging
 def licenziaGiocatore(request):
@@ -63,14 +72,20 @@ class VisualizzaSquadraView(View):
                                                             'ownership': ownership, 
                                                             'squadra': squadra})
 
-
+@method_decorator(decorators_ca, name='dispatch')
 class AssociaGiocatoreASquadra(FormView):
-    template_name='front/pages/gestionesquadra/associa-giocatore.html'
+    """Vista di associazione giocatore a squadra"""
+    template_name = 'front/pages/gestionesquadra/associa-giocatore.html'
     
     def get(self, request, *args, **kwargs):
         campionato = Campionato.objects.get(pk=request.session.get('campionato_id'))
-        squadra = Squadra.objects.get(pk=request.session.get('squadra_id'))
-        form = AssociaGiocatoreForm(campionato=campionato, squadra=squadra)
+        try:
+            squadra = Squadra.objects.get(pk=request.session.get('squadra_id'))
+            form = AssociaGiocatoreForm(campionato=campionato, squadra=squadra)
+        except ObjectDoesNotExist:
+            messages.error(request, 'Non ci sono squadre registrate al campionato!')
+            return redirect('dashboard_index')
+
         return render(request, self.template_name, context={'form': form})
     
     def post(self, request, *args, **kwargs):
@@ -82,3 +97,33 @@ class AssociaGiocatoreASquadra(FormView):
             messages.success(request, 'Giocatore associato correttamente!')
             return redirect('gestionesquadra:associa_giocatore')
         return render(request, self.template_name, context={'form': form})
+
+
+@method_decorator(decorator_la_ca, name='dispatch')
+class InserisciSquadraView(CreateView):
+    """Vista di inserimento squadra per LA"""
+    model = Squadra
+    template_name = 'front/pages/gestionesquadra/inserisci-squadra.html'
+    form_class = InserisciSquadraForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({
+            'user': self.request.user,
+            'profile': self.request.session.get('profilo')
+        })
+        return kwargs
+
+
+@method_decorator(decorators_la, name='dispatch')
+class VisualizzaSquadreLAView(ListView):
+    """Vista di visualizzazione lista squadre per LA"""
+    model = Squadra
+    template_name = 'front/pages/gestionesquadra/visualizza-squadre.html'
+
+
+@method_decorator(decorator_la, name='dispatch')
+class VisualizzaSquadreLAView(ListView):
+    """Vista di inserimento squadra per CA"""
+    model = Squadra
+    template_name = 'front/pages/gestionesquadra/visualizza-squadre.html'

@@ -5,6 +5,7 @@
         <span>Gestione campionato</span>
     </a>
     <ul class="nav nav-children">
+            {% if request.session.squadra_id %}
         <li>
             <a href="{% url 'gestionecampionato:seleziona_modulo' %}">
                  Inserisci/modifica formazione
@@ -15,9 +16,9 @@
                  Visualizza calendario scontri
             </a>
         </li>
-        {% if request.session.profilo == 'Allenatore' %}
+
         <li>
-            <a href="{% url 'gestionecampionato:visualizza_partita' request.session.giornata_corrente %}">
+            <a href="{% url 'gestionecampionato:visualizza_partita' request.session.giornata_corrente request.session.squadra_id%}">
                  Visualizza partita corrente
             </a>
         </li>
@@ -27,11 +28,30 @@
             <a href="{% url 'gestionecampionato:modifica_campionato' request.session.campionato_id %}">
                  Modifica nome campionato
             </a>
-        </li>  
+        </li>
+        <li>
+            <a href="{% url 'gestionecampionato:genera_calendario' %}">
+                 Genera calendario scontri
+            </a>
+        </li>
         {% endif %}
 
         {% if request.session.profilo == 'League Admin'%}
-        
+        <li>
+            <a href="">
+                 Visualizza tutti i campionati
+            </a>
+        </li>
+        <li>
+            <a href="">
+                 Inserisci campionato
+            </a>
+        </li>
+         <li>
+            <a href="">
+                 Caricamento voti
+            </a>
+        </li>
         {% endif %}
     </ul>
 </li>

@@ -1,0 +1,44 @@
+
+{% extends 'front/base.html' %}
+
+{% block content %}
+<section role="main" class="content-body">
+    <header class="page-header">
+        <h2>Inserisci squadra</h2>
+    </header>
+        <div class="row">
+            <div class="col-md-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <h2 class="panel-title">Inserisci squadra</h2>
+                    </header>
+                    <div class="panel-body">
+                        <p class="center">Compila i campi per inserire una nuova squadra.</p>
+                        <form class="form-horizontal form-bordered" action="" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <div class="text-danger">{{ form.errors }}</div>
+                                <label class="col-md-3 control-label" for="inputDefault" required>Nome squadra</label>
+                                <div class="col-md-2">
+                                    {{ form.nome }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-6 hidden">
+                                    {{ form.campionato }}
+                                </div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="inputDefault" required>Allenatore</label>
+                                <div class="col-md-6">
+                                    {{ form.allenatore }}
+                                </div>
+                            </div>
+                    </div>
+                    <footer class="panel-footer center">
+                        <input type="submit" id="submit" value="Inserisci squadra" class="btn btn-primary"></button>
+                    </footer>
+                </form>
+                </section>
+</section>
+
+{% endblock %}

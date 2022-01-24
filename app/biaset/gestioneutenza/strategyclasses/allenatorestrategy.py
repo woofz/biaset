@@ -65,7 +65,7 @@ class AllenatoreStrategy(Strategy):
             bool: True se l'iscrizione è andata a buon fine, False altrimenti
         """
         numero_iscritti = Squadra.objects.filter(campionato=campionato).count()
-        if numero_iscritti < campionato.max_partecipanti:
+        if numero_iscritti < campionato.partecipanti:
             squadra = Squadra(nome=f"Squadra di {utente.first_name} {utente.last_name}", 
                               campionato=campionato,
                               allenatore=utente)

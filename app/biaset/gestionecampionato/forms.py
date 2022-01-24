@@ -6,13 +6,13 @@ from gestionesquadra.models import Giocatore, Squadra
 from gestionecampionato.models import Campionato, Partita, Formazione
 
 class CreaCampionatoForm(forms.ModelForm):
-    
+
     class Meta:
+
         model = Campionato
-        fields = ('nome_campionato', 'max_partecipanti', 'championship_admin')
+        fields = ('nome_campionato', 'partecipanti', 'championship_admin')
         widgets = {
             'nome_campionato': forms.TextInput(attrs={'class': 'form-control'}),
-            'max_partecipanti': forms.TextInput(attrs={'class': 'form-control'})
         }
 
 
@@ -109,7 +109,6 @@ class RiserveForm(forms.Form):
 
         super(RiserveForm, self).__init__(*args, **kwargs)
         giocatori_per_ruolo = Giocatore.objects.filter(squadra=squadra).filter(ruolo=ruolo)
-
         self.fields['giocatore'].queryset = giocatori_per_ruolo.exclude(id__in=formazione_titolari.giocatore.all()) # Escludo i titolari dalle scelte delle riserve
         
     def save(self, commit=True, *args, **kwargs):

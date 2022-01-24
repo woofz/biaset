@@ -34,8 +34,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
-    'django_filters',
-    
+    'django_extensions',
     'datetimewidget',
     'ckeditor',
     
@@ -195,4 +194,10 @@ CKEDITOR_CONFIGS = {
         'height': 'auto',
         'width': 'auto',
     },
+}
+
+# Graph Settings
+GRAPH_MODELS = {
+  'app_labels': ["gestionecampionato", "gestionesquadra", "gestioneutenza", "core"],
+  'group_models': True,
 }

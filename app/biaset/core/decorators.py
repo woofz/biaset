@@ -17,11 +17,11 @@ def check_if_profile_exists(function=None):
     return wrapper_func
 
 
+
 def check_user_permission_ca(function=None):
     '''Controlla se un utente ha un profilo da Championship Admin'''
     def wrapper_func(request, *args, **kwargs):
-        profilo = request.session.get('profilo')
-        if profilo != 'Championship Admin':
+        if request.session.get('profilo') != 'Championship Admin':
             messages.error(request, 'Non hai i permessi per visualizzare questa pagina')
             return redirect('dashboard_index')
         return function(request, *args, **kwargs)
@@ -41,6 +41,7 @@ def check_ca_belonging(function=None):
         return function(request, *args, **kwargs)
     return wrapper_func
 
+
 def check_team_belonging(function=None):
     '''Controlla se la squadra appartiene al campionato nel quale 
     sta effettuando una data operazione'''
@@ -52,6 +53,27 @@ def check_team_belonging(function=None):
         campionato = Campionato.objects.filter(championship_admin=user).first() # Controllo se è un CA
         if int(squadra.allenatore.id) != int(request.user.id) and request.session.get('profilo') != 'Championship Admin':
             messages.error(request, "Non hai i permessi per licenziare questo giocatore.")
+            return redirect('dashboard_index')
+        return function(request, *args, **kwargs)
+    return wrapper_func
+
+
+def check_user_permission_la(function=None):
+    '''Controlla se un utente ha un profilo da League Admin'''
+    def wrapper_func(request, *args, **kwargs):
+        print(request.session.get('profilo'))
+        if request.session.get('profilo') != 'League Admin':
+            messages.error(request, 'Non hai i permessi per visualizzare questa pagina')
+            return redirect('dashboard_index')
+        return function(request, *args, **kwargs)
+    return wrapper_func
+
+
+def check_user_permission_la_ca(function=None):
+    '''Controlla se un utente ha un profilo da LA/CA'''
+    def wrapper_func(request, *args, **kwargs):
+        if request.session.get('profilo') == 'Allenatore':
+            messages.error(request, 'Non hai i permessi per visualizzare questa pagina')
             return redirect('dashboard_index')
         return function(request, *args, **kwargs)
     return wrapper_func

@@ -18,16 +18,16 @@
                             {% csrf_token %}
                             {{ form.media }}
                             <div class="form-group">
-                                <div class="text-danger">{{ form.non_field_errors }}</div>
+                                <div class="text-danger">{{ form.errors }}</div>
                                 <label class="col-md-3 control-label" for="inputDefault" required>Nome campionato</label>
                                 <div class="col-md-6">
                                     {{ form.nome_campionato }}
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-md-3 control-label" for="inputDefault" required>Numero massimo partecipanti</label>
+                                <label class="col-md-3 control-label" for="inputDefault" required>Numero partecipanti</label>
                                 <div class="col-md-6">
-                                    {{ form.max_partecipanti }}
+                                    {{ form.partecipanti }}
                                 </div>
                             </div>
                             <input type="hidden" name="{{ form.championship_admin.name }}" value="{{ request.user.id }}">

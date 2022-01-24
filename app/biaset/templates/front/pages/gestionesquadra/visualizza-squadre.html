@@ -1,0 +1,46 @@
+{% extends "front/base.html" %}
+{% block content %}
+    <section role="main" class="content-body">
+        <header class="page-header">
+            <h2>Lista squadre</h2>
+        </header>
+            <div class="row">
+                <div class="col-md-12">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            <h2 class="panel-title">Squadre partecipanti</h2>
+                        </header>
+                        <div class="panel-body">
+                            <p>Di seguito una lista delle squadre presenti in piattaforma</p>
+                            <div class="col-md-6">
+                                <div class="table-responsive">
+                                <table class="table table-hover mb-none">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nome squadra</th>
+                                            <th>Campionato</th>
+                                            <th>Allenatore</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for squadra in object_list %}
+                                        <tr>
+                                            <td>{{ squadra.id }}</td>
+                                            <td>{{ squadra.nome }}</td>
+                                            <td>{{ squadra.campionato }}</td>
+                                            <td>{{ squadra.allenatore }}</td>
+                                            <td></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                </section>
+            </div>
+        </div>
+    </section>
+{% endblock %}

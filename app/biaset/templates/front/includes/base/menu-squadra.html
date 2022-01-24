@@ -6,6 +6,7 @@
 											<span>Gestione Squadra</span>
 										</a>
 										<ul class="nav nav-children">
+                                        {% if request.user.squadra_id %}
 											<li>
 												<a href="pages-signup.html">
 													 Visualizza squadra
@@ -21,12 +22,31 @@
 													 Modifica nome squadra
 												</a>
 											</li>
+                                        {% endif %}
                                             {% if request.session.profilo == 'Championship Admin'%}
-                                            
+											<li>
+												<a href="{% url 'gestionesquadra:inserisci_squadra' %}">
+													 Inserisci squadra al campionato
+												</a>
+											</li>
+											<li>
+												<a href="{% url 'gestionesquadra:associa_giocatore' %}">
+													 Associa giocatore a squadra
+												</a>
+											</li>
                                             {% endif %}
 
                                             {% if request.session.profilo == 'League Admin'%}
-                                            
+											<li>
+												<a href="{% url 'gestionesquadra:inserisci_squadra' %}">
+													 Inserisci squadra
+												</a>
+											</li>
+											<li>
+												<a href="{% url 'gestionesquadra:visualizza_squadre' %}">
+													 Visualizza squadre
+												</a>
+											</li>
                                             {% endif %}
 										</ul>
 									</li>
