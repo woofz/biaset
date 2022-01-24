@@ -16,8 +16,9 @@ from gestionecampionato.commandpattern.receiver import Receiver
 from gestionecampionato.forms import CreaCampionatoForm, ModificaCampionatoForm, SelezionaModuloForm, TitolariForm, \
     TitolariFormSet, RiserveFormSet, RiserveForm
 from gestionesquadra.models import Squadra
+from .caricamentovoti.ImportVoti import ImportVoti
 from .facadepattern.facade import Facade, InserimentoFormazione
-from .models import Campionato, Partita, Formazione
+from .models import Campionato, Partita, Formazione, Voto
 
 decorators = [check_user_permission_ca]
 
@@ -230,6 +231,7 @@ class VisualizzaPartitaView(View):
             titolari_prima_squadra = ''
             riserve_prima_squadra = ''
 
+
         try:
             titolari_seconda_squadra = Formazione.objects.filter(tipo='T', partita=partita,
                                                                  squadra__id=partita.squadra.last().id).first().giocatore.all() \
@@ -237,6 +239,11 @@ class VisualizzaPartitaView(View):
             riserve_seconda_squadra = Formazione.objects.filter(tipo='R', partita=partita,
                                                                 squadra__id=partita.squadra.last().id).first().giocatore.all() \
                 .order_by('gestionecampionato_formazione_giocatore.id')
+
+            tit_voti = Formazione.objects.filter(tipo='T', partita=partita,
+                                                       squadra__id=partita.squadra.first().id).first().giocatore.all().values_list(
+                'id_voti').order_by('gestionecampionato_formazione_giocatore.id')
+            voti = Voto.objects.filter(id_voti__in=tit_voti, giornata=giornata)
 
         except AttributeError:
             titolari_seconda_squadra = ''
@@ -246,4 +253,15 @@ class VisualizzaPartitaView(View):
                                                             'titolari_prima_squadra': titolari_prima_squadra,
                                                             'titolari_seconda_squadra': titolari_seconda_squadra,
                                                             'riserve_prima_squadra': riserve_prima_squadra,
-                                                            'riserve_seconda_squadra': riserve_seconda_squadra})
+                                                            'riserve_seconda_squadra': riserve_seconda_squadra,
+                                                            'voti': voti})
+
+
+class CaricamentoVotiView(View):
+    template_name = 'front/pages/gestionecampionato/caricamento-voti.html'
+
+    def get(self, request, *args, **kwargs):
+        giornata_corrente = request.session['giornata_corrente']
+        worker = ImportVoti(giornata=giornata_corrente)
+        worker.vote_download()
+        return render(request, self.template_name, context={})

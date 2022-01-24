@@ -60,3 +60,28 @@ class Formazione(models.Model):
 
     class Meta:
         verbose_name_plural = 'Formazioni'
+
+
+class Voto(models.Model):
+    id_voti = models.CharField(max_length=20, blank=True)
+    ruolo = models.CharField(max_length=20, blank=True)
+    nome_giocatore = models.CharField(max_length=20, blank=True)
+    voto = models.CharField(max_length=20, blank=True)
+    gf = models.CharField(max_length=20, blank=True)
+    gs = models.CharField(max_length=20, blank=True)
+    rp = models.CharField(max_length=20, blank=True)
+    rs = models.CharField(max_length=20, blank=True)
+    rf = models.CharField(max_length=20, blank=True)
+    au = models.CharField(max_length=20, blank=True)
+    amm = models.CharField(max_length=20, blank=True)
+    esp = models.CharField(max_length=20, blank=True)
+    ass = models.CharField(max_length=20, blank=True)
+    gdv = models.CharField(max_length=20, blank=True)
+    gdp = models.CharField(max_length=20, blank=True)
+    giornata = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.id_voti}"
+
+    class Meta:
+        verbose_name_plural = 'Voti'

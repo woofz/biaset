@@ -34,7 +34,7 @@
                                             <td>{{ giocatore.nome_completo }}</td>
                                             <td>{{ giocatore.ruolo }}</td>
                                             <td>0</td>
-                                            <td>s.v.</td>
+                                            <td>{% if voto.voto %} {{ voto.voto }} {% endif %}</td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>
