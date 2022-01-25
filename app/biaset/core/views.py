@@ -47,11 +47,3 @@ class HomeView(View):
             request.session['nome_campionato'] = Campionato.objects.get(pk=request.session.get('campionato_id')).nome_campionato
             request.session['giornata_corrente'] = Campionato.objects.filter(pk=request.session['campionato_id']).first() \
             .giornata_corrente
-
-
-class LoginView(View):
-    """Definisce la login view"""
-    template_name = "front/pages/gestioneutenza/login.html"
-
-    def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, context={})

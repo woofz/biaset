@@ -49,9 +49,9 @@ class AllenatoreStrategy(Strategy):
         Returns:
             bool: True se la data di scadenza dell'invito è inferiore alla data attuale, False altrimenti
         """
-        now = datetime.now().timestamp()
+        now = datetime.now().date()
         expire_dt = invite.expire_dt
-        return True if expire_dt.timestamp() > now else False
+        return True if expire_dt > now else False
     
     def championshipSignUp(self, campionato: Campionato, utente: User, invite: Invito) -> bool:
         """Crea una squadra associata all'allenatore appena iscritto e la registra

@@ -9,7 +9,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import CreateView, UpdateView, ListView
 
-from core.decorators import check_user_permission_ca, check_ca_belonging
+from core.decorators import check_user_permission_ca, check_ca_belonging, check_championship_existence, handle_view_exception
 from gestionecampionato.commandpattern.generacalendariocommand import GeneraCalendarioCommand
 from gestionecampionato.commandpattern.invoker import Invoker
 from gestionecampionato.commandpattern.receiver import Receiver
@@ -19,11 +19,12 @@ from gestionesquadra.models import Squadra
 from .caricamentovoti.ImportVoti import ImportVoti
 from .facadepattern.facade import Facade, InserimentoFormazione
 from .models import Campionato, Partita, Formazione, Voto
-
-decorators = [check_user_permission_ca]
+from .exceptions import NumeroPartecipantiNonRaggiunto, VotiPresenti
+decorators = [check_user_permission_ca, handle_view_exception]
 
 
 @method_decorator(decorators, name='dispatch')
+@method_decorator(check_championship_existence, name='dispatch')
 class CreaCampionatoView(SuccessMessageMixin, CreateView):
     """Classe View che permette la creazione di un campionato"""
     model = Campionato
@@ -41,6 +42,7 @@ class ModificaCampionatoView(SuccessMessageMixin, UpdateView):
     form_class = ModificaCampionatoForm
     success_message = 'Campionato modificato correttamente!'
     template_name = 'front/pages/gestionecampionato/modifica-campionato.html'
+    success_url = reverse_lazy('dashboard_index')
 
 
 @method_decorator(decorators, name='dispatch')
@@ -67,6 +69,8 @@ class GeneraCalendarioView(View):
         campionato = Campionato.objects.get(
             championship_admin=user)  # Prendo il campionato
         championship_teams = Squadra.objects.filter(campionato=campionato)
+        if championship_teams.count() < campionato.partecipanti:
+            raise NumeroPartecipantiNonRaggiunto(f"Il tuo campionato non ha raggiunto il numero di partecipanti. {championship_teams.count()}/{campionato.partecipanti}")
         return render(request, self.template_name, context={
             'championship_teams': championship_teams})
 
@@ -125,8 +129,7 @@ class InserisciFormazioneTitolariView(View):
         subsystemInserimentoFormazione = InserimentoFormazione(request=request,
                                                                formset=TitolariFormSet,
                                                                formType=TitolariForm,
-                                                               tipoFormazione='T',
-                                                               template=self.template_name)
+                                                               tipoFormazione='T')
 
         facade = Facade(subsystem=subsystemInserimentoFormazione)
         if facade.operation():
@@ -175,8 +178,7 @@ class InserisciRiserveView(View):
         subsystemInserimentoRiserve = InserimentoFormazione(request=request,
                                                             formset=RiserveFormSet,
                                                             formType=RiserveForm,
-                                                            tipoFormazione='R',
-                                                            template=self.template_name)
+                                                            tipoFormazione='R')
 
         facade = Facade(subsystem=subsystemInserimentoRiserve)
         if facade.operation():
@@ -256,12 +258,14 @@ class VisualizzaPartitaView(View):
                                                             'riserve_seconda_squadra': riserve_seconda_squadra,
                                                             'voti': voti})
 
-
+@method_decorator(decorators, name='dispatch')
 class CaricamentoVotiView(View):
     template_name = 'front/pages/gestionecampionato/caricamento-voti.html'
 
     def get(self, request, *args, **kwargs):
         giornata_corrente = request.session['giornata_corrente']
+        if Voto.objects.filter(giornata=giornata_corrente).exists():
+            raise VotiPresenti('I voti per questa giornata sono già presenti')
         worker = ImportVoti(giornata=giornata_corrente)
         worker.vote_download()
         return render(request, self.template_name, context={})

@@ -5,6 +5,7 @@ from django import forms
 from .models import Invito
 from gestionecampionato.models import Campionato
 from django.core.mail import send_mail
+from datetime import datetime
 
 class CreaInvitoForm(forms.ModelForm):
     
@@ -12,7 +13,10 @@ class CreaInvitoForm(forms.ModelForm):
         model = Invito
         fields = ('destinatario', 'expire_dt', 'user')
         widgets = {
-            'destinatario': forms.TextInput(attrs={'class': 'form-control'})
+            'destinatario': forms.EmailInput(attrs={'class': 'form-control'})
+        }
+        error_messages = {
+            'data-non-valida': "L'invito deve avere una data di scadenza posteriore a quella odierna!"
         }
         
     def save(self, commit=True):

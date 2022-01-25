@@ -42,12 +42,11 @@ class InserimentoFormazione:
     not a part of the Subsystem.
     """
 
-    def __init__(self, request, formset: BaseFormSet, formType: Form, tipoFormazione: str, template: str):
+    def __init__(self, request, formset: BaseFormSet, formType: Form, tipoFormazione: str):
         self.request = request
         self._formset = formset
         self._form = formType
         self._tipoFormazione = tipoFormazione
-        self._templateName = template
         self._form_portieri = None
         self._form_difensori = None
         self._form_centrocampisti = None

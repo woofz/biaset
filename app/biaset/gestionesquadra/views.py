@@ -18,6 +18,7 @@ from gestionecampionato.models import Campionato
 from core.decorators import check_user_permission_ca, check_team_belonging, check_user_permission_la_ca, \
                             check_user_permission_la
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.messages.views import SuccessMessageMixin
 
 decorator_la = check_user_permission_la
 decorator_la_ca = check_user_permission_la_ca
@@ -80,8 +81,8 @@ class AssociaGiocatoreASquadra(FormView):
     def get(self, request, *args, **kwargs):
         campionato = Campionato.objects.get(pk=request.session.get('campionato_id'))
         try:
-            squadra = Squadra.objects.get(pk=request.session.get('squadra_id'))
-            form = AssociaGiocatoreForm(campionato=campionato, squadra=squadra)
+            squadra = Squadra.objects.filter(campionato__id=campionato.id).exists()
+            form = AssociaGiocatoreForm(campionato=campionato)
         except ObjectDoesNotExist:
             messages.error(request, 'Non ci sono squadre registrate al campionato!')
             return redirect('dashboard_index')
@@ -90,8 +91,7 @@ class AssociaGiocatoreASquadra(FormView):
     
     def post(self, request, *args, **kwargs):
         campionato = Campionato.objects.get(pk=request.session.get('campionato_id'))
-        squadra = Squadra.objects.get(pk=request.session.get('squadra_id'))
-        form = AssociaGiocatoreForm(request.POST, campionato=campionato, squadra=squadra)
+        form = AssociaGiocatoreForm(request.POST, campionato=campionato)
         if form.is_valid():
             form.associaGiocatore()
             messages.success(request, 'Giocatore associato correttamente!')
@@ -100,11 +100,13 @@ class AssociaGiocatoreASquadra(FormView):
 
 
 @method_decorator(decorator_la_ca, name='dispatch')
-class InserisciSquadraView(CreateView):
+class InserisciSquadraView(SuccessMessageMixin, CreateView):
     """Vista di inserimento squadra per LA"""
     model = Squadra
     template_name = 'front/pages/gestionesquadra/inserisci-squadra.html'
     form_class = InserisciSquadraForm
+    success_url = reverse_lazy('dashboard_index')
+    success_message = 'Squadra creata con successo!'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -118,12 +120,5 @@ class InserisciSquadraView(CreateView):
 @method_decorator(decorators_la, name='dispatch')
 class VisualizzaSquadreLAView(ListView):
     """Vista di visualizzazione lista squadre per LA"""
-    model = Squadra
-    template_name = 'front/pages/gestionesquadra/visualizza-squadre.html'
-
-
-@method_decorator(decorator_la, name='dispatch')
-class VisualizzaSquadreLAView(ListView):
-    """Vista di inserimento squadra per CA"""
     model = Squadra
     template_name = 'front/pages/gestionesquadra/visualizza-squadre.html'

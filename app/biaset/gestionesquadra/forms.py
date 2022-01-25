@@ -11,10 +11,10 @@ class AssociaGiocatoreForm(forms.Form):
     
     def __init__(self, *args, **kwargs):
         campionato = kwargs.pop('campionato', None)
-        squadra = kwargs.pop('squadra', None)
+        #squadra = kwargs.pop('squadra', None)
 
         super(AssociaGiocatoreForm, self).__init__(*args, **kwargs)
-        self.fields['giocatore'].queryset = Giocatore.objects.all().exclude(squadra=squadra).exclude(squadra__campionato=campionato)
+        self.fields['giocatore'].queryset = Giocatore.objects.all().exclude(squadra__campionato=campionato)
         self.fields['squadra'].queryset = Squadra.objects.filter(campionato=campionato)
         
     def associaGiocatore(self):

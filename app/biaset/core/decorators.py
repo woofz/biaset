@@ -1,4 +1,5 @@
 # Check esistenza profilo
+import functools
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.urls import reverse
@@ -6,6 +7,8 @@ from gestionecampionato.models import Campionato
 from gestionesquadra.models import Squadra
 from django.contrib.auth.models import User
 from django.utils.functional import wraps
+from gestionecampionato.exceptions import CampionatoGiaAssociatoException
+from django.shortcuts import render
 
 
 def check_if_profile_exists(function=None):
@@ -77,3 +80,28 @@ def check_user_permission_la_ca(function=None):
             return redirect('dashboard_index')
         return function(request, *args, **kwargs)
     return wrapper_func
+
+
+def check_championship_existence(function=None):
+    '''Controlla se un CA ha un campionato associato'''
+    def wrapper_func(request, *args, **kwargs):
+        if Campionato.objects.filter(championship_admin__id=request.user.id).exists():
+            raise CampionatoGiaAssociatoException('Campionato già esistente.')
+        return function(request, *args, **kwargs)
+    return wrapper_func
+
+
+def handle_view_exception(func):
+    """Decorator per gestire le eccezioni."""
+    @functools.wraps(func)
+    def wrapper(request, *args, **kwargs):
+        try:
+            response = func(request, *args, **kwargs)
+        except Exception as e:
+            context = {
+              'error': str(e),
+            }
+            response = render(request, 'front/error.html', context=context)
+        return response
+
+    return wrapper
