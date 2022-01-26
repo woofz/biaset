@@ -133,3 +133,6 @@ dmypy.json
 
 # Db Data
 data/
+
+# Generated Doc
+app/docs/

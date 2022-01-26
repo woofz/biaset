@@ -1,0 +1,9 @@
+Gestione Campionato Forms
+=========================
+.. automodule:: gestionecampionato.forms
+    :members:
+
+Gestione Squadra Forms
+=========================
+.. automodule:: gestionesquadra.forms
+    :members:
