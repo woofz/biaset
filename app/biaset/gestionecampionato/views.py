@@ -19,7 +19,8 @@ from gestionesquadra.models import Squadra
 from .caricamentovoti.ImportVoti import ImportVoti
 from .facadepattern.facade import Facade, InserimentoFormazione
 from .models import Campionato, Partita, Formazione, Voto
-from .exceptions import NumeroPartecipantiNonRaggiunto, VotiPresenti
+from .exceptions import NumeroPartecipantiNonRaggiuntoException, VotiPresentiException, CalendarioPresenteException
+
 decorators = [check_user_permission_ca, handle_view_exception]
 
 
@@ -46,6 +47,7 @@ class ModificaCampionatoView(SuccessMessageMixin, UpdateView):
 
 
 @method_decorator(decorators, name='dispatch')
+@method_decorator(handle_view_exception, name='dispatch')
 class GeneraCalendarioView(View):
     """Classe View che permette la generazione degli scontri di un campionato"""
     template_name = 'front/pages/gestionecampionato/generacalendario.html'
@@ -70,7 +72,10 @@ class GeneraCalendarioView(View):
             championship_admin=user)  # Prendo il campionato
         championship_teams = Squadra.objects.filter(campionato=campionato)
         if championship_teams.count() < campionato.partecipanti:
-            raise NumeroPartecipantiNonRaggiunto(f"Il tuo campionato non ha raggiunto il numero di partecipanti. {championship_teams.count()}/{campionato.partecipanti}")
+            raise NumeroPartecipantiNonRaggiuntoException(f"Il tuo campionato non ha raggiunto il numero di partecipanti. {championship_teams.count()}/{campionato.partecipanti}")
+        if Partita.objects.filter(squadra__campionato=campionato).count() > 0:
+            print(Partita.objects.filter(squadra__campionato=campionato).count())
+            raise CalendarioPresenteException('Il calendario per questo campionato è già stato generato!')
         return render(request, self.template_name, context={
             'championship_teams': championship_teams})
 
@@ -265,7 +270,7 @@ class CaricamentoVotiView(View):
     def get(self, request, *args, **kwargs):
         giornata_corrente = request.session['giornata_corrente']
         if Voto.objects.filter(giornata=giornata_corrente).exists():
-            raise VotiPresenti('I voti per questa giornata sono già presenti')
+            raise VotiPresentiException('I voti per questa giornata sono già presenti')
         worker = ImportVoti(giornata=giornata_corrente)
         worker.vote_download()
         return render(request, self.template_name, context={})

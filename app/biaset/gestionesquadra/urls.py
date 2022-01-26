@@ -1,7 +1,7 @@
 from django.urls import path
 from django.contrib.auth.decorators import login_required
 from .views import VisualizzaSquadraView, AssociaGiocatoreASquadra, licenziaGiocatore, InserisciSquadraView, \
-    VisualizzaSquadreLAView
+    VisualizzaSquadreLAView, ModificaNomeSquadraView
 
 app_name = 'gestionesquadra'
 urlpatterns = [
@@ -9,5 +9,6 @@ urlpatterns = [
     path('ajax/licenziagiocatore/', login_required(licenziaGiocatore), name='licenzia_giocatore_ajax'),
     path('associagiocatore/', login_required(AssociaGiocatoreASquadra.as_view()), name='associa_giocatore'),
     path('inseriscisquadra/', login_required(InserisciSquadraView.as_view()), name='inserisci_squadra'),
+    path('modificasquadra/<pk>/', login_required(ModificaNomeSquadraView.as_view()), name='modifica_squadra'),
     path('list/', login_required(VisualizzaSquadreLAView.as_view()), name='visualizza_squadre'),
 ]

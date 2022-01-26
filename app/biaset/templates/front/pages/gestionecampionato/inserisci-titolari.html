@@ -1,8 +1,5 @@
 {% extends 'front/base.html' %}
-
-
-<h1>Titoloni!</h1>
-
+{% load static %}
 <form method="post">
     {% csrf_token %}
     {{ form_portiere.non_form_errors }}
@@ -30,7 +27,8 @@
                     </header>
                     <div class="panel-body">
                         <p class="center">Seleziona accuratamente la formazione titolare. Non sono ammessi giocatori duplicati o mancanti</p>
-                        <form class="form-horizontal form-bordered" action="" method="post">
+                        <form class="form-horizontal form-bordered"
+                              action="" method="post">
                             {% csrf_token %}
                             <div class="form-group">
                                 <div class="text-danger center">{{ form_portiere.non_form_errors }}</div>

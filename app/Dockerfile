@@ -6,6 +6,7 @@ WORKDIR /app
 RUN apt-get update
 RUN apt-get install python3-dev default-libmysqlclient-dev gcc -y
 RUN apt-get install graphviz graphviz-dev -y
+RUN apt-get install make
 
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt

@@ -22,7 +22,8 @@ services:
       - 8000:8000
     image: app:django-biaset
     container_name:  biaset_container
-    command: bash -c "python biaset/manage.py makemigrations && 
+    command: bash -c "python biaset/manage.py wait_for_db &&
+                      python biaset/manage.py makemigrations &&
                       python biaset/manage.py migrate && 
                       python biaset/manage.py runserver 0.0.0.0:8000"
     depends_on: 

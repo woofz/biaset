@@ -1,0 +1,174 @@
+{% block content %}
+<section role="main" class="content-body">
+					<header class="page-header">
+						<h2>Dashboard</h2>
+					</header>
+						<div class="row">
+							<div class="col-md-12">
+								<section class="panel panel-primary">
+									<header class="panel-heading">
+										<h2 class="panel-title">Cos'è questo portale?</h2>
+										<p class="panel-subtitle">Info generali su BiaSet</p>
+									</header>
+									<div class="panel-body">
+										<p class="text-justify">Benvenuto sul portale <strong>BiaSet</strong>, portale creato da appassionati di Fantacalcio per appassionati di Fantacalcio! :)
+                                        <br>In qualità di <strong>League Admin</strong>, avrai la possibilità di visualizzare i dati relativi ai campionati, alle squadre, ecc. Inoltre, hai un accesso esclusivo all'Amministrazione del Framework. Clicca <a class="h4" href="{% url 'admin:index' %}">QUI</a> per accedervi. </p>
+									</div>
+								</section>
+							</div>
+                        </div>
+						<div class="col-lg-3 col-md-12">
+							<section class="panel">
+								<header class="panel-heading">
+									<h2 class="panel-title">Utenti della piattaforma</h2>
+								</header>
+								<div class="panel-body">
+									<div class="table-responsive">
+										<table class="table table-striped mb-none">
+											<thead>
+												<tr>
+													<th>ID</th>
+													<th>Nome</th>
+													<th>Cognome</th>
+													<th>Email</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for utente in dati_piattaforma.utenti %}
+												<tr>
+													<td>{{ utente.id }}</td>
+													<td>{{ utente.first_name }}</td>
+													<td>{{ utente.last_name }}</td>
+													<td>{{ utente.email }}</td>
+												</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</section>
+						</div>
+						<div class="col-lg-3 col-md-12">
+							<section class="panel">
+								<header class="panel-heading">
+									<h2 class="panel-title">Squadre della piattaforma</h2>
+								</header>
+								<div class="panel-body">
+									<div class="table-responsive">
+										<table class="table table-striped mb-none">
+											<thead>
+												<tr>
+													<th>ID</th>
+													<th>Nome</th>
+													<th>Allenatore</th>
+													<th>Campionato</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for squadra in dati_piattaforma.squadre %}
+												<tr>
+													<td>{{ squadra.id }}</td>
+													<td>{{ squadra.nome }}</td>
+													<td>{{ squadra.allenatore }}</td>
+													<td>{{ squadra.campionato }}</td>
+												</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</section>
+						</div>
+							<div class="col-md-6 col-lg-12 col-xl-6">
+								<div class="row">
+									<div class="col-md-12 col-lg-6 col-xl-8">
+										<section class="panel panel-featured-left panel-featured-quartenary">
+											<div class="panel-body">
+												<div class="widget-summary">
+													<div class="widget-summary-col widget-summary-col-icon">
+														<div class="summary-icon bg-quartenary">
+															<i class="fa fa-users"></i>
+														</div>
+													</div>
+													<div class="widget-summary-col">
+														<div class="summary">
+															<h4 class="title">Numero iscritti</h4>
+															<div class="info">
+																<strong class="amount">{{ dati_piattaforma.n_utenti }}</strong>
+															</div>
+                                                            <div class="summary-footer">
+                                                                <a class="text-muted text-uppercase">Include anche i Championship/League Admin</a>
+                                                            </div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</section>
+									</div>
+									<div class="col-md-7 col-lg-7 col-xl-8">
+										<section class="panel panel-featured-left panel-featured-primary">
+											<div class="panel-body">
+												<div class="widget-summary">
+													<div class="widget-summary-col widget-summary-col-icon">
+														<div class="summary-icon bg-primary">
+															<i class="fas fa-trophy"></i>
+														</div>
+													</div>
+													<div class="widget-summary-col">
+														<div class="summary">
+															<h4 class="title">Numero campionati</h4>
+															<div class="info">
+																<strong class="amount">{{ dati_piattaforma.n_campionati }}</strong>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</section>
+									</div>
+                                    <div class="col-md-7 col-lg-7 col-xl-8">
+										<section class="panel panel-featured-left panel-featured-dark">
+											<div class="panel-body">
+												<div class="widget-summary">
+													<div class="widget-summary-col widget-summary-col-icon">
+														<div class="summary-icon bg-dark">
+															<i class="fas fa-flag"></i>
+														</div>
+													</div>
+													<div class="widget-summary-col">
+														<div class="summary">
+															<h4 class="title">Numero squadre</h4>
+															<div class="info">
+																<strong class="amount">{{ dati_piattaforma.n_squadre }}</strong>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</section>
+									</div>
+                                    <div class="col-md-7 col-lg-7 col-xl-8">
+										<section class="panel panel-featured-left panel-featured-secondary">
+											<div class="panel-body">
+												<div class="widget-summary">
+													<div class="widget-summary-col widget-summary-col-icon">
+														<div class="summary-icon bg-secondary">
+															<i class="fas fa-empire"></i>
+														</div>
+													</div>
+													<div class="widget-summary-col">
+														<div class="summary">
+															<h4 class="title">Numero partite</h4>
+															<div class="info">
+																<strong class="amount">{{ dati_piattaforma.n_partite }}</strong>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</section>
+									</div>
+								</div>
+								</div>
+				</section>
+{% endblock content %}

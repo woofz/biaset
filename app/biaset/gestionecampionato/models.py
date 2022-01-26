@@ -8,17 +8,17 @@ class Campionato(models.Model):
     """Campionato Entity"""
     PARTECIPANTI_CHOICES = [(6, '6'), (8, '8'), (10, '10')]
     championship_admin = models.ForeignKey(User, verbose_name='Championship Admin', blank=True, null=True, on_delete=models.CASCADE)
-    nome_campionato = models.CharField(max_length=255)
+    nome_campionato = models.CharField(max_length=30, unique=True)
     giornata_corrente = models.IntegerField(default=1)
     partecipanti = models.IntegerField(verbose_name='Partecipanti', default=6, choices=PARTECIPANTI_CHOICES)
 
     def __str__(self) -> str:
         return f"{self.nome_campionato}"
     
-    def clean(self):
+    """def clean(self):
         existing_campionato = Campionato.objects.filter(nome_campionato=self.nome_campionato).first()
         if existing_campionato:
-            raise ValidationError('Esiste già un campionato con questo nome.')
+            raise ValidationError('Esiste già un campionato con questo nome.')"""
     
     class Meta:
         verbose_name_plural = 'Campionati'

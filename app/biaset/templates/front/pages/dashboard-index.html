@@ -1,5 +1,7 @@
 {% extends 'front/base.html' %}
 {% block content %}
+
+    {%  if request.session.profilo != 'League Admin' %}
 				<section role="main" class="content-body">
 					<header class="page-header">
 						<h2>Dashboard</h2>
@@ -8,62 +10,16 @@
 							<div class="col-md-12">
 								<section class="panel panel-primary">
 									<header class="panel-heading">
-
-
 										<h2 class="panel-title">Cos'è questo portale?</h2>
 										<p class="panel-subtitle">Info generali su BiaSet</p>
 									</header>
 									<div class="panel-body">
-										<p class="text-justify">Descrizione portale</p>
+										<p class="text-justify">Benvenuto sul portale <strong>BiaSet</strong>, portale creato da appassionati di Fantacalcio per appassionati di Fantacalcio! :)
+                                        <br>Su questa piattaforma potrai creare il tuo campionato fantacalcistico basato su regole da noi create per rendere il gioco più divertente e competitivo. In alternativa, potrai partecipare ad un campionato previo invito.</p>
 									</div>
 								</section>
-							</div>							
-							<div class="col-md-6 col-lg-12 col-xl-6">
-								<div class="row">
-									<div class="col-md-12 col-lg-6 col-xl-6">
-										<section class="panel panel-featured-left panel-featured-primary">
-											<div class="panel-body">
-												<div class="widget-summary">
-													<div class="widget-summary-col widget-summary-col-icon">
-														<div class="summary-icon bg-primary">
-															<i class="fa fa-trophy"></i>
-														</div>
-													</div>
-													<div class="widget-summary-col">
-														<div class="summary">
-															<h4 class="title">Campionato</h4>
-															<div class="info">
-																<strong class="amount">{{ request.session.nome_campionato }}</strong>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</section>
-									</div>
-									<div class="col-md-12 col-lg-6 col-xl-6">
-										<section class="panel panel-featured-left panel-featured-tertiary">
-											<div class="panel-body">
-												<div class="widget-summary">
-													<div class="widget-summary-col widget-summary-col-icon">
-														<div class="summary-icon bg-tertiary">
-															<i class="fa fa-shopping-cart"></i>
-														</div>
-													</div>
-													<div class="widget-summary-col">
-														<div class="summary">
-															<h4 class="title">Ordini di oggi</h4>
-															<div class="info">
-																<strong class="amount">38</strong>
-															</div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</section>
-									</div>
-								</div>
-						</div>
+							</div>
+                            {% if request.session.squadra_id %}
 						<div class="col-lg-4 col-md-12">
 							<section class="panel">
 								<header class="panel-heading">
@@ -75,7 +31,7 @@
 											<thead>
 												<tr>
 													<th>Nome squadra</th>
-													<th>Presidente</th>
+													<th>Allenatore</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -91,6 +47,62 @@
 								</div>
 							</section>
 						</div>
+							<div class="col-md-6 col-lg-12 col-xl-6">
+								<div class="row">
+									<div class="col-md-12 col-lg-6 col-xl-8">
+										<section class="panel panel-featured-left panel-featured-primary">
+											<div class="panel-body">
+												<div class="widget-summary">
+													<div class="widget-summary-col widget-summary-col-icon">
+														<div class="summary-icon bg-primary">
+															<i class="fa fa-trophy"></i>
+														</div>
+													</div>
+													<div class="widget-summary-col">
+														<div class="summary">
+															<h4 class="title">Campionato</h4>
+															<div class="info">
+																<strong class="amount">{{ request.session.nome_campionato }}</strong>
+															</div>
+                                                            <div class="summary-footer">
+                                                                <a class="text-muted text-uppercase"># Partecipanti: {{ campionato.partecipanti }}</a>
+                                                            </div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</section>
+									</div>
+									<div class="col-md-7 col-lg-7 col-xl-8">
+										<section class="panel panel-featured-left panel-featured-danger">
+											<div class="panel-body">
+												<div class="widget-summary">
+													<div class="widget-summary-col widget-summary-col-icon">
+														<div class="summary-icon bg-danger">
+															<i class="fas fa-futbol"></i>
+														</div>
+													</div>
+													<div class="widget-summary-col">
+														<div class="summary">
+															<h4 class="title">Partita</h4>
+															<div class="info">
+																<a class="amount text-primary" href="{% url 'gestionecampionato:visualizza_partita' request.session.giornata_corrente request.session.squadra_id %}">{{ request.session.partita_corrente }}</a></strong>
+															</div>
+														</div>
+                                                    <div class="summary-footer">
+													    <a class="text-muted text-uppercase">Giornata numero {{ request.session.giornata_corrente }}</a>
+    												</div>
+													</div>
+												</div>
+											</div>
+										</section>
+									</div>
+								</div>
+						</div>
+                        {% endif %}
 					</div>
 				</section>
+    {% else %}
+        {% include 'front/pages/dashboard-league-admin.html' %}
+    {% endif %}
 {% endblock %}

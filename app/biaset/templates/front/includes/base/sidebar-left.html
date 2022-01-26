@@ -11,6 +11,7 @@
 						<div class="nano-content">
 							<nav id="menu" class="nav-main" role="navigation">
 								<ul class="nav nav-main">
+                                {% if request.session.campionato_id or request.session.profilo == 'League Admin' %}
 									<li class="nav-active">
 										<a href="{% url 'dashboard_index' %}">
 											<i class="fa fa-home" aria-hidden="true"></i>
@@ -36,6 +37,7 @@
 									{% endblock %}
 									<!-- END gestione utenza-->
 									{% endif %}
+                                {% endif %}
 								</ul>
 							</nav>
 						</div>

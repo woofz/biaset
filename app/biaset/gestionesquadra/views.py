@@ -16,7 +16,7 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from gestionecampionato.models import Campionato
 from core.decorators import check_user_permission_ca, check_team_belonging, check_user_permission_la_ca, \
-                            check_user_permission_la
+    check_user_permission_la, check_if_user_is_allenatore_squadra
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.messages.views import SuccessMessageMixin
 
@@ -122,3 +122,12 @@ class VisualizzaSquadreLAView(ListView):
     """Vista di visualizzazione lista squadre per LA"""
     model = Squadra
     template_name = 'front/pages/gestionesquadra/visualizza-squadre.html'
+
+
+@method_decorator(check_if_user_is_allenatore_squadra, name='dispatch')
+class ModificaNomeSquadraView(SuccessMessageMixin, UpdateView):
+    success_url = reverse_lazy('dashboard_index')
+    success_message = 'Nome modificato correttamente!'
+    model = Squadra
+    fields = ['nome']
+    template_name = 'front/pages/gestionesquadra/modifica-squadra.html'

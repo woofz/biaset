@@ -82,6 +82,17 @@ def check_user_permission_la_ca(function=None):
     return wrapper_func
 
 
+def check_if_user_is_allenatore_squadra(function=None):
+    """Controlla se l'utente è l'allenatore della squadra che vuole modificare"""
+    def wrapper_func(request, pk: int, *args, **kwargs):
+        squadra = Squadra.objects.get(pk=pk)
+        if squadra.allenatore_id != request.user.id:
+            messages.error(request, 'Puoi modificare solo la tua squadra!')
+            return redirect('dashboard_index')
+        return function(request, *args, **kwargs)
+    return wrapper_func
+
+
 def check_championship_existence(function=None):
     '''Controlla se un CA ha un campionato associato'''
     def wrapper_func(request, *args, **kwargs):

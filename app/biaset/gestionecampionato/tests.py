@@ -4,8 +4,9 @@ from django.urls import reverse
 from model_bakery import baker
 
 from gestionesquadra.models import Squadra
+from .exceptions import CalendarioPresenteException
 from .forms import CreaCampionatoForm, SelezionaModuloForm
-from .models import Campionato
+from .models import Campionato, Partita
 
 
 class GestioneCampionatoTestCases(TestCase):
@@ -82,13 +83,30 @@ class GestioneCampionatoTestCases(TestCase):
         self.assertTrue(response.status_code, 200)
 
     def test_genera_calendario_get(self):
+        Partita.objects.all().delete()
         self.profilo_ca.user.add(self.user)
         self.client.get(reverse('dashboard_index'))
         url = reverse('gestionecampionato:genera_calendario')
         response = self.client.get(url)
         self.assertEquals(response.status_code, 200)
 
+    def test_genera_calendario_esistente_fail(self):
+        self.profilo_ca.user.add(self.user)
+        self.client.get(reverse('dashboard_index'))
+        url = reverse('gestionecampionato:genera_calendario')
+        response = self.client.get(url)
+        self.assertRaises(CalendarioPresenteException)
+
+    def test_genera_calendario_no_minimo_squadre_fail(self):
+        self.profilo_ca.user.add(self.user)
+        self.client.get(reverse('dashboard_index'))
+        url = reverse('gestionecampionato:genera_calendario')
+        Squadra.objects.all().delete()
+        response = self.client.get(url)
+        self.assertRaises(CalendarioPresenteException)
+
     def test_genera_calendario_6_squadre(self):
+        Partita.objects.all().delete()
         self.profilo_ca.user.add(self.user)
         self.client.get(reverse('dashboard_index'))
         from gestionesquadra.models import Squadra
@@ -97,6 +115,7 @@ class GestioneCampionatoTestCases(TestCase):
         self.assertEquals(response.status_code, 302)
 
     def test_genera_calendario_8_squadre(self):
+        Partita.objects.all().delete()
         self.profilo_ca.user.add(self.user)
         squadre = baker.make('gestionesquadra.Squadra', _quantity=2, campionato=self.campionato, make_m2m=True)
 
@@ -106,6 +125,7 @@ class GestioneCampionatoTestCases(TestCase):
         self.assertEquals(response.status_code, 302)
 
     def test_genera_calendario_10_squadre(self):
+        Partita.objects.all().delete()
         self.profilo_ca.user.add(self.user)
         squadre = baker.make('gestionesquadra.Squadra', _quantity=4, campionato=self.campionato, make_m2m=True)
         self.client.get(reverse('dashboard_index'))
