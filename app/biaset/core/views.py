@@ -84,3 +84,17 @@ class HomeView(View):
             request.session['giornata_corrente'] = Campionato.objects.filter(
                 pk=request.session['campionato_id']).first() \
                 .giornata_corrente
+
+
+class ShowCaseView(View):
+    template_name = 'core/index.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, context={})
+
+
+class RegolamentoView(View):
+    template_name = 'core/regolamento.html'
+
+    def get(self, request, *args, **kwargs):
+        pass

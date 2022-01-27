@@ -1,9 +1,10 @@
 from pathlib import Path
 import os
+
 from django.urls.base import reverse_lazy
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -14,10 +15,9 @@ SECRET_KEY = 'django-insecure-hc7-z0s&%rte&g2l8683$g1tar&89%hm-f)gmxt7y4f)hy+zqn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
 ALLOWED_HOSTS = ['*']
 SITE_ID = 1
-
+SITE_DOMAIN = 'django'
 
 # Application definition
 
@@ -37,14 +37,13 @@ INSTALLED_APPS = [
     'django_extensions',
     'datetimewidget',
     'ckeditor',
-    
 
     'core',
     'gestioneutenza',
     'gestionecampionato',
     'gestionesquadra',
     'gestionemessaggistica',
-    
+
 ]
 
 MIDDLEWARE = [
@@ -77,7 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'biaset.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -89,10 +87,9 @@ DATABASES = {
         'PASSWORD': 'rootpwd',
         'HOST': 'db',
         'PORT': 3306,
-        
+
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -112,7 +109,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -126,13 +122,12 @@ USE_L10N = False
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = ''
-STATICFILES_DIRS = ( os.path.join('static'), )
+STATIC_ROOT = '/staticfiles/'
+STATICFILES_DIRS = (os.path.join('static'),)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -141,7 +136,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Login
 LOGIN_URL = reverse_lazy('gestioneutenza:login_view')
-
 
 # All Auth Providers
 SOCIALACCOUNT_PROVIDERS = {
@@ -164,12 +158,11 @@ SOCIALACCOUNT_PROVIDERS = {
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # Email Backend
-# For PRODUCTION 
+# For PRODUCTION
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # For dev
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
 
 EMAIL_USE_TLS = False
 EMAIL_HOST = 'ssl0.ovh.net'
@@ -177,15 +170,9 @@ EMAIL_HOST_USER = 'email-username'
 EMAIL_HOST_PASSWORD = 'email-passwd'
 EMAIL_PORT = 587
 
-# Graph settings
-GRAPH_MODELS = {
-  'app_labels': ["gestioneutenza", "gestionecampionato", "gestionesquadra"],
-}
-
 
 # Social Account Settings
 SOCIALACCOUNT_ADAPTER = 'core.adapters.CustomSocialAccountAdapter'
-
 
 # Ck Editor Config
 CKEDITOR_CONFIGS = {
@@ -198,6 +185,6 @@ CKEDITOR_CONFIGS = {
 
 # Graph Settings
 GRAPH_MODELS = {
-  'app_labels': ["gestionecampionato", "gestionesquadra", "gestioneutenza", "core"],
-  'group_models': True,
+    'app_labels': ["gestionecampionato", "gestionesquadra", "gestioneutenza", "core"],
+    'group_models': True,
 }
