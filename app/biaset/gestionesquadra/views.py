@@ -16,14 +16,14 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from gestionecampionato.models import Campionato
 from core.decorators import check_user_permission_ca, check_team_belonging, check_user_permission_la_ca, \
-    check_user_permission_la, check_if_user_is_allenatore_squadra
+    check_user_permission_la, check_if_user_is_allenatore_squadra, check_partecipants, handle_view_exception
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.messages.views import SuccessMessageMixin
 
 decorator_la = check_user_permission_la
-decorator_la_ca = check_user_permission_la_ca
-decorators_la = [decorator_la]
-decorators_ca = [check_user_permission_ca]
+decorator_la_ca = [check_user_permission_la_ca, handle_view_exception]
+decorators_la = [decorator_la, handle_view_exception]
+decorators_ca = [check_user_permission_ca, handle_view_exception]
 
 
 @check_team_belonging
@@ -41,6 +41,22 @@ def licenziaGiocatore(request):
     except Exception:
         messages.error(request, 'Il giocatore in questione non è registrato.')
     return JsonResponse(data)
+
+
+@check_team_belonging
+def eliminaSquadra(request):
+    '''Elimina una squadra [AJAX Function]'''
+    squadra_id = request.GET.get('squadra_id', None)
+    data = {
+        'status': 'ok'
+    }
+    try:
+        squadra = Squadra.objects.get(pk=squadra_id)
+        squadra.delete()
+    except Exception:
+        messages.error(request, 'La squadra non esiste.')
+    return JsonResponse(data)
+
 
 def check_squadra_ownership(request, pk: int, *args, **kwargs) -> bool:
     user = User.objects.get(pk=request.user.id)
@@ -77,7 +93,7 @@ class VisualizzaSquadraView(View):
 class AssociaGiocatoreASquadra(FormView):
     """Vista di associazione giocatore a squadra"""
     template_name = 'front/pages/gestionesquadra/associa-giocatore.html'
-    
+
     def get(self, request, *args, **kwargs):
         campionato = Campionato.objects.get(pk=request.session.get('campionato_id'))
         try:
@@ -88,7 +104,7 @@ class AssociaGiocatoreASquadra(FormView):
             return redirect('dashboard_index')
 
         return render(request, self.template_name, context={'form': form})
-    
+
     def post(self, request, *args, **kwargs):
         campionato = Campionato.objects.get(pk=request.session.get('campionato_id'))
         form = AssociaGiocatoreForm(request.POST, campionato=campionato)
@@ -100,6 +116,7 @@ class AssociaGiocatoreASquadra(FormView):
 
 
 @method_decorator(decorator_la_ca, name='dispatch')
+@method_decorator(check_partecipants, name='dispatch')
 class InserisciSquadraView(SuccessMessageMixin, CreateView):
     """Vista di inserimento squadra per LA"""
     model = Squadra
@@ -125,9 +142,28 @@ class VisualizzaSquadreLAView(ListView):
 
 
 @method_decorator(check_if_user_is_allenatore_squadra, name='dispatch')
+@method_decorator(handle_view_exception, name='dispatch')
 class ModificaNomeSquadraView(SuccessMessageMixin, UpdateView):
     success_url = reverse_lazy('dashboard_index')
     success_message = 'Nome modificato correttamente!'
     model = Squadra
     fields = ['nome']
     template_name = 'front/pages/gestionesquadra/modifica-squadra.html'
+
+
+@method_decorator(decorator_la_ca, name='dispatch')
+class ModificaSquadraView(SuccessMessageMixin, UpdateView):
+    """Vista di inserimento squadra per LA"""
+    model = Squadra
+    template_name = 'front/pages/gestionesquadra/modifica-squadra.html'
+    form_class = InserisciSquadraForm
+    success_url = reverse_lazy('dashboard_index')
+    success_message = 'Squadra modificata con successo!'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({
+            'user': self.request.user,
+            'profile': self.request.session.get('profilo')
+        })
+        return kwargs

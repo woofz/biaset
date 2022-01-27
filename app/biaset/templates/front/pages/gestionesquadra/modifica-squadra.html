@@ -22,6 +22,21 @@
                                     {{ form.nome }}
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <div class="col-md-6 hidden">
+                                    {{ form.campionato }}
+                                </div>
+                            </div>
+                            {% if request.session.profilo != 'Allenatore' %}
+                                <div class="text-danger">{{ form.errors }}</div>
+                            <div class="form-group">
+                                <label class="col-md-3 control-label" for="inputDefault" required>Allenatore</label>
+                                <div class="col-md-6">
+                                    {{ form.allenatore }}
+                                </div>
+                            </div>
+
+                            {% endif %}
                     </div>
                     <footer class="panel-footer">
                         <input type="submit" id="submit" value="Modifica" class="btn btn-primary"></button>

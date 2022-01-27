@@ -12,6 +12,7 @@ from gestioneutenza.models import Profilo
 class HomeView(View):
     """Definisce la view della dashboard (area privata utente)"""
     template_name = "front/pages/dashboard-index.html"
+    error_page = "front/error.html"
 
     def get(self, request, *args, **kwargs):
         utente = User.objects.get(pk=request.user.pk)
@@ -27,8 +28,8 @@ class HomeView(View):
             if not Campionato.objects.filter(championship_admin=utente).exists():
                 messages.error(request, 'Non hai ancora creato un campionato! Procedi alla creazione.')
                 return redirect('gestionecampionato:inserisci_campionato')
-        if not request.session.get('campionato_id'):
-            self.set_session_variables(request, user=utente)
+
+        self.set_session_variables(request, user=utente)
 
         if request.session.get('profilo') == 'League Admin':
             dati_piattaforma.update({'campionati': Campionato.objects.all(),
@@ -40,7 +41,13 @@ class HomeView(View):
                                      'n_partite': Partita.objects.all().count()
                                      })
         else:
-            campionato = Campionato.objects.get(pk=request.session.get('campionato_id'))
+            try:
+                campionato = Campionato.objects.get(pk=request.session.get('campionato_id'))
+            except Exception:
+                return render(request, self.error_page, context={'error': 'Hai un profilo, ma non fai parte di un'
+                                                                          ' Campionato. Probabilmente ti stanno '
+                                                                          ' assegnando una squadra. '
+                                                                          'Attendi pazientemente.'})
         squadre_campionato = Squadra.objects.filter(campionato__id=request.session.get('campionato_id'))
 
         return render(request, self.template_name, context={'profilo': profilo,

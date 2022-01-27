@@ -12,17 +12,17 @@
             </a>
         </li>
         <li>
-            <a href="{% url 'gestionecampionato:visualizza_calendario' %}">
-                 Visualizza calendario scontri
-            </a>
-        </li>
-
-        <li>
             <a href="{% url 'gestionecampionato:visualizza_partita' request.session.giornata_corrente request.session.squadra_id%}">
                  Visualizza partita corrente
             </a>
         </li>
         {% endif %}
+        <li>
+            <a href="{% url 'gestionecampionato:visualizza_calendario' %}">
+                 Visualizza calendario scontri
+            </a>
+        </li>
+
         {% if request.session.profilo == 'Championship Admin' and request.session.campionato_id %}
         <li>
             <a href="{% url 'gestionecampionato:modifica_campionato' request.session.campionato_id %}">

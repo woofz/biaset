@@ -69,6 +69,8 @@ class AllenatoreStrategy(Strategy):
         """
         numero_iscritti = Squadra.objects.filter(campionato=campionato).count()
         if numero_iscritti < campionato.partecipanti:
+            if Squadra.objects.filter(allenatore=utente).exists():
+                return True
             squadra = Squadra(nome=f"Squadra di {utente.first_name} {utente.last_name}",
                               campionato=campionato,
                               allenatore=utente)

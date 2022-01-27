@@ -151,6 +151,9 @@ class GestioneCampionatoTestCases(TestCase):
 
     def test_inserimento_riserve_get(self):
         self.profilo_allenatore.user.add(self.user)
+        self.partita = baker.make('gestionecampionato.Partita')
+        self.partita.squadra.add(self.squadra)
+        print(self.squadra)
         self.client.get(reverse('dashboard_index'))
         response = self.client.get(reverse('gestionecampionato:inserisci_riserve'))
         self.assertEquals(response.status_code, 200)

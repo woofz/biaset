@@ -68,7 +68,7 @@
                                             <td>{{ giocatore.nome_completo }}</td>
                                             <td>{{ giocatore.ruolo }}</td>
                                             <td>{{ giocatore.quotazione }}</td>
-                                            {% if ownership %}<td><button value="{{ giocatore.id }}" class="mb-xs mt-xs mr-xs btn btn-danger licenzia"><i class="fas fa-minus-circle"></i></a></td>{% endif %}
+                                            {% if ownership %}<td><button value="{{ giocatore.id }}" class="mb-xs mt-xs mr-xs btn btn-danger licenzia"><i class="fas fa-minus-circle"></i></button></td>{% endif %}
                                         </tr>
                                         {% endfor %}
                                     </tbody>

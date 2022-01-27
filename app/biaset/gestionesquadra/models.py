@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class Squadra(models.Model):
     nome = models.CharField(max_length=50, verbose_name="Nome squadra")
     campionato = models.ForeignKey('gestionecampionato.Campionato', verbose_name="Campionato", on_delete=models.CASCADE)
-    allenatore = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Allenatore', blank=True, null=True, related_name='squadra')
+    allenatore = models.OneToOneField(User, on_delete=models.SET_NULL, verbose_name='Allenatore', blank=True, null=True, related_name='squadra')
     
     def __str__(self):
         return f"{self.nome}"

@@ -1,6 +1,47 @@
 {% extends 'front/base.html' %}
 {% block content %}
 
+{% if request.session.profilo != 'Allenatore' %}
+{% block javascripts %}
+<script>
+
+    $(document).ready(function(){
+        $('.eliminaSquadra').click(function(){
+            let team_id = $(this).attr('id');
+                   Swal.fire({
+                      title: 'Conferma',
+                      text: "Sei sicuro di voler eliminare la squadra?",
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: 'Si'
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                          $.ajax({
+                            url: '{% url 'gestionesquadra:elimina_squadra_ajax' %}',
+                            data: {
+                              'squadra_id': team_id,
+                              'requester_id': {{ request.user.id }}
+                            },
+                            dataType: 'json',
+                            success: function(data) {
+                                Swal.fire(
+                                    'Eliminata!',
+                                    'La squadra è stata eliminata!.',
+                                    'success'
+                                );
+                                $('#'+team_id).closest("tr").hide();
+                            }
+                          });
+                      }
+                   });
+            });
+        });
+</script>
+{% endblock javascripts %}
+{% endif %}
+
     {%  if request.session.profilo != 'League Admin' %}
 				<section role="main" class="content-body">
 					<header class="page-header">
@@ -19,7 +60,7 @@
 									</div>
 								</section>
 							</div>
-                            {% if request.session.squadra_id %}
+
 						<div class="col-lg-4 col-md-12">
 							<section class="panel">
 								<header class="panel-heading">
@@ -32,6 +73,8 @@
 												<tr>
 													<th>Nome squadra</th>
 													<th>Allenatore</th>
+                                                    {% if profilo != 'Allenatore' %}<th></th>{% endif %}
+                                                    {% if profilo != 'Allenatore' %}<th></th>{% endif %}
 												</tr>
 											</thead>
 											<tbody>
@@ -39,6 +82,8 @@
 												<tr>
 													<td><a href="{% url 'gestionesquadra:visualizza_squadra' squadra.id %}">{{ squadra.nome }}</a></td>
 													<td><span class="label label-primary">{{ squadra.allenatore.first_name }} {{ squadra.allenatore.last_name }}</span></td>
+                                                {% if profilo != 'Allenatore' %}<th><a href="{% url 'gestionesquadra:modifica_squadra_superuser' squadra.id %}"><i class="fas fa-edit"></i></a></th>{% endif %}
+                                                {% if profilo != 'Allenatore' %}<th id="{{ squadra.id }}"><a href="#" class="eliminaSquadra" id="{{ squadra.id }}"><i class="fas fa-trash"></i></a></th>{% endif %}
 												</tr>
 												{% endfor %}
 											</tbody>
@@ -73,6 +118,7 @@
 											</div>
 										</section>
 									</div>
+                                    {% if request.session.squadra_id %}
 									<div class="col-md-7 col-lg-7 col-xl-8">
 										<section class="panel panel-featured-left panel-featured-danger">
 											<div class="panel-body">

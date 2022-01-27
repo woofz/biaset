@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.models import User
 
 from gestionecampionato.models import Campionato
 from .models import Giocatore, Squadra
@@ -31,9 +32,10 @@ class InserisciSquadraForm(forms.ModelForm):
         user = kwargs.pop('user', None)
         super(InserisciSquadraForm, self).__init__(*args, **kwargs)
 
-
         if profile == 'Championship Admin':
-            self.fields['campionato'].queryset = Campionato.objects.all().filter(championship_admin=user)
+            campionato = Campionato.objects.filter(championship_admin=user).first()
+            self.fields['campionato'].queryset = Campionato.objects.filter(championship_admin=user).all()
+            self.fields['allenatore'].queryset = User.objects.filter(squadra__isnull=True)
 
     class Meta:
         model = Squadra
