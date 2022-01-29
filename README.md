@@ -1,5 +1,7 @@
 ![BiaSet](https://github.com/woofz/biaset/blob/main/gitresources/logo_v1.png)
-versione 0.1
+versione 1.0
+
+![Travis](https://app.travis-ci.com/woofz/biaset.svg?branch=main)
 ### Progetto Ingegneria del Software UniSa 2021
 **BiaSet** è un sistema di gestione di campionati di fantacalcio, con regole differenti da quello standard. Tale progetto nasce, in primis, dall'esigenza di avere una piattaforma in grado di fornire un calcolo automatizzato delle  giornate fantacalcistiche, basandosi su regole differenti da quelle standard. 
 Seconda, ma non meno importante, l'esigenza aggiornare la piattaforma attualmente in uso dal 2009, in quanto la tecnologia risulta obsoleta, anche nella progettazione. 
