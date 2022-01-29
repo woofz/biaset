@@ -34,7 +34,8 @@ class AllenatoreStrategy(Strategy):
         """
         profilo = Profilo.objects.get(nome='Allenatore')  # Prendo il profilo da Allenatore
         invite = None or Invito.objects.filter(destinatario=user.email).first()
-        if invite:
+        print(invite)
+        if invite is not None:
             if self.isInviteValid(invite):
                 campionato = invite.campionato
                 profilo.user.add(user)  # Associo il profilo 'Allenatore' all'utente

@@ -1,9 +1,10 @@
 from django.urls import path, include
 from django.contrib.auth.decorators import login_required
-from .views import HomeView, ShowCaseView
+from .views import HomeView, ShowCaseView, RegolamentoView
 
 urlpatterns = [
     path('', ShowCaseView.as_view(), name='index'),
+    path('regolamento/', RegolamentoView.as_view(),name='regolamento'),
     path('dashboard/', login_required(HomeView.as_view()), name='dashboard_index'),
     path('gestioneutenza/', include(('gestioneutenza.urls', 'gestioneutenza'), namespace='gestioneutenza')),
     path('gestionecampionato/', include(('gestionecampionato.urls', 'gestionecampionato'), namespace='gestionecampionato')),

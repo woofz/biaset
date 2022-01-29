@@ -30,9 +30,9 @@ class Profilo(models.Model):
 
 class Invito(models.Model):
     user = models.ForeignKey(User, verbose_name="Creato da", on_delete=models.CASCADE)
-    expire_dt = models.DateField(verbose_name="Data e orario di scadenza")
+    expire_dt = models.DateField(verbose_name="Data di scadenza (mm/gg/aaaa)")
     codice_invito = models.CharField(max_length=32)
-    destinatario = models.EmailField(max_length=255, verbose_name="Email destinatario", unique=True)
+    destinatario = models.EmailField(max_length=50, verbose_name="Email destinatario", unique=True)
     campionato = models.ForeignKey(Campionato, verbose_name='Campionato', on_delete=models.CASCADE, null=True,
                                    blank=True)
 

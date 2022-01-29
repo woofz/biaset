@@ -17,7 +17,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 SITE_ID = 1
-SITE_DOMAIN = 'django'
+#SITE_DOMAIN = 'django'
 
 # Application definition
 
@@ -136,6 +136,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Login
 LOGIN_URL = reverse_lazy('gestioneutenza:login_view')
+LOGIN_REDIRECT_URL = reverse_lazy('dashboard_index')
 
 # All Auth Providers
 SOCIALACCOUNT_PROVIDERS = {

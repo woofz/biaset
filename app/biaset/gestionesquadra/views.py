@@ -66,10 +66,11 @@ def check_squadra_ownership(request, pk: int, *args, **kwargs) -> bool:
         return False
     return True
     
-    
+
+@method_decorator(handle_view_exception, name='dispatch')
 class VisualizzaSquadraView(View):
     """Vista per la visualizzazione di una Squadra"""
-    template_name='front/pages/gestionesquadra/list.html'
+    template_name = 'front/pages/gestionesquadra/list.html'
     
     def get(self, request, pk: int, *args, **kwargs):
         squadra = Squadra.objects.get(pk=pk)

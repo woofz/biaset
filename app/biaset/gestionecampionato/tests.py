@@ -3,10 +3,11 @@ from django.test import TestCase
 from django.urls import reverse
 from model_bakery import baker
 
-from gestionesquadra.models import Squadra
+from gestionesquadra.models import Squadra, Giocatore
+from .caricamentovoti.ImportVoti import ImportVoti
 from .exceptions import CalendarioPresenteException
 from .forms import CreaCampionatoForm, SelezionaModuloForm
-from .models import Campionato, Partita
+from .models import Campionato, Partita, Voto
 
 
 class GestioneCampionatoTestCases(TestCase):
@@ -20,12 +21,24 @@ class GestioneCampionatoTestCases(TestCase):
         self.profilo_la = baker.make('gestioneutenza.Profilo', nome='League Admin')
 
         self.url_creazione_campionato = reverse('gestionecampionato:inserisci_campionato')
+
         # Creo il campionato, la squadra dell'utente e i giocatori della squadra.
         self.campionato = baker.make('gestionecampionato.Campionato', championship_admin=self.user)
         self.squadra = baker.make('gestionesquadra.Squadra', allenatore=self.user, campionato=self.campionato)
-        self.set_giocatori = baker.make('gestionesquadra.Giocatore', _quantity=25)
-        for giocatore in self.set_giocatori:
+        self.set_portieri = baker.make('gestionesquadra.Giocatore', _quantity=3, ruolo='P')
+        self.set_difensori = baker.make('gestionesquadra.Giocatore', _quantity=7, ruolo='D')
+        self.set_centrocampisti = baker.make('gestionesquadra.Giocatore', _quantity=7, ruolo='C')
+        self.set_attaccanti = baker.make('gestionesquadra.Giocatore', _quantity=7, ruolo='A')
+
+        for giocatore in self.set_difensori:
             giocatore.squadra.add(self.squadra)
+
+        for giocatore in self.set_centrocampisti:
+            giocatore.squadra.add(self.squadra)
+
+        for giocatore in self.set_attaccanti:
+            giocatore.squadra.add(self.squadra)
+
         # Creo un set di squadre e l'associo al campionato di Test
         self.set_squadre = baker.make('gestionesquadra.Squadra', _quantity=5, campionato=self.campionato, make_m2m=True)
 
@@ -157,3 +170,70 @@ class GestioneCampionatoTestCases(TestCase):
         self.client.get(reverse('dashboard_index'))
         response = self.client.get(reverse('gestionecampionato:inserisci_riserve'))
         self.assertEquals(response.status_code, 200)
+
+    def test_form_crea_campionato_tc_1_2_1(self):
+        Campionato.objects.all().delete()
+        nomeCampionato = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+        partecipanti = 10
+        form = CreaCampionatoForm(data={'championship_admin': self.user,
+                                        'nome_campionato': nomeCampionato,
+                                        'partecipanti': partecipanti})
+        self.assertEquals(form.is_valid(), False)
+
+    def test_form_crea_campionato_tc_1_2_2(self):
+        Campionato.objects.all().delete()
+        nomeCampionato = 'Campionato!!'
+        partecipanti = 10
+        form = CreaCampionatoForm(data={'championship_admin': self.user,
+                                        'nome_campionato': nomeCampionato,
+                                        'partecipanti': partecipanti})
+        self.assertEquals(form.is_valid(), False)
+        self.assertIn('nome_campionato', form.errors.keys())
+
+    def test_form_crea_campionato_tc_1_2_3(self):
+        Campionato.objects.all().delete()
+        nomeCampionato = 'Campionato'
+        partecipanti = 3
+        form = CreaCampionatoForm(data={'championship_admin': self.user,
+                                        'nome_campionato': nomeCampionato,
+                                        'partecipanti': partecipanti})
+        self.assertEquals(form.is_valid(), False)
+        self.assertIn('partecipanti', form.errors.keys())
+
+    def test_form_crea_campionato_tc_1_2_4(self):
+        Campionato.objects.all().delete()
+        nomeCampionato = 'Campionato'
+        partecipanti = 15
+        form = CreaCampionatoForm(data={'championship_admin': self.user,
+                                        'nome_campionato': nomeCampionato,
+                                        'partecipanti': partecipanti})
+        self.assertEquals(form.is_valid(), False)
+        self.assertIn('partecipanti', form.errors.keys())
+
+    def test_form_crea_campionato_tc_1_2_5(self):
+        Campionato.objects.all().delete()
+        nomeCampionato = 'Campionato'
+        partecipanti = 9
+        form = CreaCampionatoForm(data={'championship_admin': self.user,
+                                        'nome_campionato': nomeCampionato,
+                                        'partecipanti': partecipanti})
+        self.assertEquals(form.is_valid(), False)
+        self.assertIn('partecipanti', form.errors.keys())
+
+    def test_form_crea_campionato_tc_1_2_6(self):
+        Campionato.objects.all().delete()
+        nomeCampionato = 'Campionato'
+        partecipanti = 10
+        form = CreaCampionatoForm(data={'championship_admin': self.user,
+                                        'nome_campionato': nomeCampionato,
+                                        'partecipanti': partecipanti})
+        self.assertEquals(form.is_valid(), True)
+        self.assertIsInstance(form.save(), Campionato)
+
+    def test_import_voti(self):
+        importVoti = ImportVoti(giornata=1)
+        importVoti.vote_download()
+        self.assertGreater(Voto.objects.all().count(), 0)
+
+    def test_inserimento_titolari(self):
+        print(Giocatore.objects.filter(squadra=self.squadra).first().ruolo)

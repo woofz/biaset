@@ -1,3 +1,4 @@
+from django.core.validators import RegexValidator
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -8,7 +9,13 @@ class Campionato(models.Model):
     """Campionato Entity"""
     PARTECIPANTI_CHOICES = [(6, '6'), (8, '8'), (10, '10')]
     championship_admin = models.ForeignKey(User, verbose_name='Championship Admin', blank=True, null=True, on_delete=models.CASCADE)
-    nome_campionato = models.CharField(max_length=30, unique=True)
+    nome_campionato = models.CharField(max_length=50, unique=True, validators=[
+        RegexValidator(
+            regex='^[A-Za-z0-9]*$',
+            message='Il nome del campionato deve essere alfanumerico.',
+            code='invalid_campionato'
+        ),
+    ])
     giornata_corrente = models.IntegerField(default=1)
     partecipanti = models.IntegerField(verbose_name='Partecipanti', default=6, choices=PARTECIPANTI_CHOICES)
 

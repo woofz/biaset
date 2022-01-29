@@ -60,7 +60,7 @@ class HomeView(View):
 
     def set_session_variables(self, request, user: User):
         profilo = request.session.get('profilo')
-
+        request.session['squadra_id'] = None
         if Squadra.objects.filter(allenatore=user).exists():
             squadra = None or Squadra.objects.filter(allenatore=user).first()
             request.session['campionato_id'] = squadra.campionato.id
@@ -90,11 +90,15 @@ class ShowCaseView(View):
     template_name = 'core/index.html'
 
     def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, context={})
+        return render(request, self.template_name, context={'page': 'index'})
 
 
 class RegolamentoView(View):
-    template_name = 'core/regolamento.html'
+    template_name = 'core/pages/regolamento.html'
 
     def get(self, request, *args, **kwargs):
-        pass
+        return render(request, self.template_name, context={'page': 'regolamento'})
+
+
+def handler404(request, exception, template_name="404.html"):
+    return render(request, 'front/404.html', status=404)

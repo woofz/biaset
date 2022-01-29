@@ -33,7 +33,6 @@ class InserisciSquadraForm(forms.ModelForm):
         super(InserisciSquadraForm, self).__init__(*args, **kwargs)
 
         if profile == 'Championship Admin':
-            campionato = Campionato.objects.filter(championship_admin=user).first()
             self.fields['campionato'].queryset = Campionato.objects.filter(championship_admin=user).all()
             self.fields['allenatore'].queryset = User.objects.filter(squadra__isnull=True)
 

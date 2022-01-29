@@ -1,9 +1,16 @@
+from django.core.validators import RegexValidator
 from django.db import models
 from django.contrib.auth.models import User
 
 
 class Squadra(models.Model):
-    nome = models.CharField(max_length=50, verbose_name="Nome squadra", unique=True)
+    nome = models.CharField(max_length=50, verbose_name="Nome squadra", unique=True, validators=[
+        RegexValidator(
+            regex='^[A-Za-z0-9]*$',
+            message='Il nome della squadra deve essere alfanumerico.',
+            code='invalid_squadra'
+        ),
+    ])
     campionato = models.ForeignKey('gestionecampionato.Campionato', verbose_name="Campionato", on_delete=models.CASCADE)
     allenatore = models.OneToOneField(User, on_delete=models.SET_NULL, verbose_name='Allenatore', blank=True, null=True, related_name='squadra')
     
