@@ -6,6 +6,6 @@ services:
   - docker
 
 before_script: pip install docker-compose && cd app
-
+env: DJANGO_SETTINGS_MODULE="biaset.settings"
 script:
   - docker-compose run app sh -c "python biaset/manage.py wait_for_db && coverage run --branch --source=gestioneutenza,gestionesquadra,gestionecampionato,core biaset/manage.py test -v 2 && coverage xml"
