@@ -73,8 +73,8 @@
 												<tr>
 													<th>Nome squadra</th>
 													<th>Allenatore</th>
-                                                    {% if profilo != 'Allenatore' %}<th></th>{% endif %}
-                                                    {% if profilo != 'Allenatore' %}<th></th>{% endif %}
+                                                    {% if request.session.profilo != 'Allenatore' %}<th></th>{% endif %}
+                                                    {% if request.session.profilo != 'Allenatore' %}<th></th>{% endif %}
 												</tr>
 											</thead>
 											<tbody>
@@ -82,8 +82,8 @@
 												<tr>
 													<td><a href="{% url 'gestionesquadra:visualizza_squadra' squadra.id %}">{{ squadra.nome }}</a></td>
 													<td><span class="label label-primary">{{ squadra.allenatore.first_name }} {{ squadra.allenatore.last_name }}</span></td>
-                                                {% if profilo != 'Allenatore' %}<th><a href="{% url 'gestionesquadra:modifica_squadra_superuser' squadra.id %}"><i class="fas fa-edit"></i></a></th>{% endif %}
-                                                {% if profilo != 'Allenatore' %}<th id="{{ squadra.id }}"><a href="#" class="eliminaSquadra" id="{{ squadra.id }}"><i class="fas fa-trash"></i></a></th>{% endif %}
+                                                {% if request.session.profilo != 'Allenatore' %}<th><a href="{% url 'gestionesquadra:modifica_squadra_superuser' squadra.id %}"><i class="fas fa-edit"></i></a></th>{% endif %}
+                                                {% if request.session.profilo != 'Allenatore' %}<th id="{{ squadra.id }}"><a href="#" class="eliminaSquadra" id="{{ squadra.id }}"><i class="fas fa-trash"></i></a></th>{% endif %}
 												</tr>
 												{% endfor %}
 											</tbody>

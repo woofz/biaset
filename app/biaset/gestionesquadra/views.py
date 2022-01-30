@@ -85,7 +85,7 @@ class VisualizzaSquadraView(View):
             spesa_stipendi = round(stipendi['totale_quotazioni']/40, 2)
         except Exception:
             pass
-        return render(request, self.template_name, context={ 'giocatori': qs, 'budget_disponibile': budget_disponibile, 
+        return render(request, self.template_name, context={'giocatori': qs, 'budget_disponibile': budget_disponibile,
                                                             'stipendi': spesa_stipendi, 
                                                             'ownership': ownership, 
                                                             'squadra': squadra})

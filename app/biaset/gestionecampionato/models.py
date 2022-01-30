@@ -11,7 +11,7 @@ class Campionato(models.Model):
     championship_admin = models.ForeignKey(User, verbose_name='Championship Admin', blank=True, null=True, on_delete=models.CASCADE)
     nome_campionato = models.CharField(max_length=50, unique=True, validators=[
         RegexValidator(
-            regex='^[A-Za-z0-9]*$',
+            regex='^[A-Za-z a-z 0-9]*$',
             message='Il nome del campionato deve essere alfanumerico.',
             code='invalid_campionato'
         ),
