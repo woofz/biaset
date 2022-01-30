@@ -166,6 +166,6 @@ class ModificaSquadraView(SuccessMessageMixin, UpdateView):
         kwargs = super().get_form_kwargs()
         kwargs.update({
             'user': self.request.user,
-            'profile': self.request.session.get('profilo')
+            'profile': self.request.session.get('profilo'),
         })
         return kwargs

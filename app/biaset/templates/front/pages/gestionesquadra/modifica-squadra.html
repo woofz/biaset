@@ -27,7 +27,7 @@
                                     {{ form.campionato }}
                                 </div>
                             </div>
-                            {% if request.session.profilo != 'Allenatore' and request.session.profilo != 'Championship Admin' %}
+                            {% if request.session.profilo != 'Allenatore'  %}
                                 <div class="text-danger">{{ form.errors }}</div>
                             <div class="form-group">
                                 <label class="col-md-3 control-label" for="inputDefault" required>Allenatore</label>

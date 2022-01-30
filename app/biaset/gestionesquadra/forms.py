@@ -34,7 +34,7 @@ class InserisciSquadraForm(forms.ModelForm):
 
         if profile == 'Championship Admin':
             self.fields['campionato'].queryset = Campionato.objects.filter(championship_admin=user).all()
-            self.fields['allenatore'].queryset = User.objects.filter(squadra__isnull=True)
+            self.fields['allenatore'].queryset = User.objects.all()
 
     class Meta:
         model = Squadra
