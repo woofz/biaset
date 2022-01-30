@@ -10,7 +10,7 @@ from django.views import View
 from django.views.generic import CreateView, UpdateView, ListView
 
 from core.decorators import check_user_permission_ca, check_ca_belonging, check_championship_existence, \
-    handle_view_exception
+    handle_view_exception, check_user_permission_la
 from gestionecampionato.commandpattern.generacalendariocommand import GeneraCalendarioCommand
 from gestionecampionato.commandpattern.invoker import Invoker
 from gestionecampionato.commandpattern.receiver import Receiver
@@ -23,6 +23,7 @@ from .models import Campionato, Partita, Formazione, Voto
 from .exceptions import NumeroPartecipantiNonRaggiuntoException, VotiPresentiException, CalendarioPresenteException
 
 decorators = [check_user_permission_ca, handle_view_exception]
+decorators_la = [handle_view_exception, check_user_permission_la]
 
 
 def get_or_none(classmodel, **kwargs):
@@ -43,6 +44,16 @@ class CreaCampionatoView(SuccessMessageMixin, CreateView):
     form_class = CreaCampionatoForm
     success_message = 'Campionato creato correttamente!'
     template_name = "front/pages/gestionecampionato/creacampionato.html"
+    success_url = reverse_lazy('dashboard_index')
+
+
+@method_decorator(decorators_la, name='dispatch')
+class CreaCampionatoLAView(SuccessMessageMixin, CreateView):
+    """Classe View che permette la creazione di un campionato"""
+    model = Campionato
+    form_class = CreaCampionatoForm
+    success_message = 'Campionato creato correttamente!'
+    template_name = "front/pages/gestionecampionato/creacampionato-la.html"
     success_url = reverse_lazy('dashboard_index')
 
 

@@ -1,13 +1,14 @@
 from django.urls import path, include
 from .views import CreaCampionatoView, InserisciRiserveView, ModificaCampionatoView, VisualizzaPartitaView, \
     GeneraCalendarioView, SelezionaModuloView, InserisciFormazioneTitolariView, VisualizzaCalendarioView, \
-    CaricamentoVotiView
+    CaricamentoVotiView, CreaCampionatoLAView
 from django.contrib.auth.decorators import login_required
 
 app_name = 'gestionecampionato'
 
 urlpatterns = [
     path('creacampionato/', login_required(CreaCampionatoView.as_view()), name='inserisci_campionato'),
+    path('creacampionato/la/', login_required(CreaCampionatoLAView.as_view()), name='inserisci_campionato_la'),
     path('modificacampionato/<pk>/', login_required(ModificaCampionatoView.as_view()), name='modifica_campionato'),
     path('generacalendario/', login_required(GeneraCalendarioView.as_view()), name='genera_calendario'),
     path('inserisciformazione/', login_required(SelezionaModuloView.as_view()), name='seleziona_modulo'),
