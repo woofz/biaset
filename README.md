@@ -9,15 +9,15 @@ Seconda, ma non meno importante, l'esigenza aggiornare la piattaforma attualment
 Il nome e il progetto sono interamente dedicati ad un componente fondamentale del gruppo. 
 
 
-### Features (versione non definitiva)
-Il sistema permetterà la gestione di campionati multipli, tutti rispondenti a regole pre-impostate dall'amministratore generale. Le figure principali del portale sono: League Admin (LA) , Championship Admin (CA) e l'utente semplice (U).
+### Features
+Il sistema permetterà la gestione di campionati multipli, tutti rispondenti a regole pre-impostate dall'amministratore generale. Le figure principali del portale sono: League Admin (LA) , Championship Admin (CA) e l'allenatore (A).
 
 Il **League Admin** ha il controllo totale sulla piattaforma, può aggiungere/modificare/eliminare i campionati della lega, così come le squadre e/o i giocatori associate/i ad essi.
 Il **Championship Admin** potrà gestire unicamente il campionato a lui associato. 
-L'**utente semplice** è un partecipante di un campionato.
+L'**allenatore** è un partecipante di un campionato.
 
-Gli utenti potranno inserire, entro i limiti stabiliti, la formazione per la giornata fantacalcistica in corso. A fine giornata, il League Admin provvederà al caricamento dei voti dei giocatori della corrente giornata. Sarà compito del Championship Admin lanciare il calcolo automatico dei voti per il proprio campionato. 
-Ogni campionato avrà una classifica con tutte le squadre ad esso associate. I vincitori saranno, poi, salvati all'interno dell'albo d'oro. 
+Gli utenti potranno inserire, entro i limiti stabiliti, la formazione per la giornata fantacalcistica in corso. A fine giornata, il Championship Admin provvederà al caricamento dei voti dei giocatori della corrente giornata. Sarà compito del Championship Admin lanciare il calcolo automatico dei voti per il proprio campionato. 
+
 
 
 ### Membri del progetto
@@ -25,3 +25,6 @@ Ogni campionato avrà una classifica con tutte le squadre ad esso associate. I v
 Candidato | Matricola | E-Mail
 ------------ | ------------- | -------------
 Danilo Aliberti | 0512103836 | d.aliberti10@studenti.unisa.it
+
+### Documentazione
+[Sphinx documentation](https://woofz.github.io/biaset/)
