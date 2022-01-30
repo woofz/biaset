@@ -40,6 +40,6 @@ class InserisciSquadraForm(forms.ModelForm):
         model = Squadra
         fields = '__all__'
         widgets = {
-            'nome': forms.TextInput(attrs={'class': 'form-control'}),
+            'nome': forms.TextInput(attrs={'class': 'form-control', 'maxlength': 60}),
         }
 

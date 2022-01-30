@@ -17,7 +17,9 @@
                         <form class="form-horizontal form-bordered" action="" method="post">
                             {% csrf_token %}
                             <div class="form-group">
-                                <div class="text-danger">{{ form.errors }}</div>
+                                <div class="text-danger">{{ form.nome.errors }}</div>
+                                <div class="text-danger">{{ form.campionato.errors }}</div>
+                                <div class="text-danger">{{ form.allenatore.errors }}</div>
                                 <label class="col-md-3 control-label" for="inputDefault" required>Nome squadra</label>
                                 <div class="col-md-2">
                                     {{ form.nome }}

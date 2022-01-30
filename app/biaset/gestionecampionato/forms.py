@@ -12,7 +12,7 @@ class CreaCampionatoForm(forms.ModelForm):
         model = Campionato
         fields = ('nome_campionato', 'partecipanti', 'championship_admin')
         widgets = {
-            'nome_campionato': forms.TextInput(attrs={'class': 'form-control'}),
+            'nome_campionato': forms.TextInput(attrs={'class': 'form-control', 'maxlength': 60}),
         }
 
 
