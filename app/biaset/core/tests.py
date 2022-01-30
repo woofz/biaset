@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 from django.urls import reverse
 from model_bakery import baker
 from unittest.mock import patch
@@ -6,6 +7,7 @@ from django.core.management import call_command
 from django.db.utils import OperationalError
 from django.test import TestCase
 
+from core.decorators import check_championship_existence
 from gestionecampionato.models import Campionato
 from gestionesquadra.models import Squadra
 

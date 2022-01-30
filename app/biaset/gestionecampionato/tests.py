@@ -1,13 +1,15 @@
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 from django.test import TestCase
 from django.urls import reverse
 from model_bakery import baker
 
+from core.decorators import check_championship_existence
 from gestionesquadra.models import Squadra, Giocatore
 from .caricamentovoti.ImportVoti import ImportVoti
-from .exceptions import CalendarioPresenteException
+from .exceptions import CalendarioPresenteException, CampionatoGiaAssociatoException
 from .forms import CreaCampionatoForm, SelezionaModuloForm
-from .models import Campionato, Partita, Voto
+from .models import Campionato, Partita, Voto, Formazione
 
 
 class GestioneCampionatoTestCases(TestCase):
@@ -53,7 +55,7 @@ class GestioneCampionatoTestCases(TestCase):
         self.partita.squadra.add(self.squadra)
         self.formazione_titolare = baker.make('gestionecampionato.Formazione', tipo='T', partita=self.partita,
                                               squadra=self.squadra)
-
+        self.client.force_login(self.user)
 
     def test_crezione_campionato_success(self):
         '''Test success di creazione campionato'''
@@ -69,6 +71,11 @@ class GestioneCampionatoTestCases(TestCase):
         self.campionato.save()
         campionato_form = CreaCampionatoForm(data=self.data)
         self.assertFalse(campionato_form.is_valid())
+
+    def test_decorator_championship_existence(self):
+        request = self.client.get('gestionecampionato:inserisci_campionato')
+        request.user = self.user
+        self.assertRaises(CampionatoGiaAssociatoException)
 
     def test_seleziona_modulo_fail(self):
         form = SelezionaModuloForm(data={'difensori': 5, 'centrocampisti': 5, 'attaccanti': 3})
@@ -91,8 +98,33 @@ class GestioneCampionatoTestCases(TestCase):
         self.assertTrue(response.status_code, 302)
 
     def test_inserimento_formazione_success_modulo(self):
+        self.profilo_allenatore.user.add(self.user)
         fail_url = reverse('gestionecampionato:inserisci_titolari', kwargs={'d': '4', 'c': '4', 'a': '2'})
+        self.client.get(reverse('dashboard_index'))
         response = self.client.get(fail_url)
+        self.assertTrue(response.status_code, 200)
+
+    def test_inserimento_formazione_fail_no_formazione(self):
+        self.profilo_allenatore.user.add(self.user)
+        Formazione.objects.all().delete()
+        fail_url = reverse('gestionecampionato:inserisci_titolari', kwargs={'d': '4', 'c': '4', 'a': '2'})
+        self.client.get(reverse('dashboard_index'))
+        response = self.client.get(fail_url)
+        self.assertTrue(response.status_code, 302)
+
+    def test_inserimento_formazione_post_fail(self):
+        self.profilo_allenatore.user.add(self.user)
+        fail_url = reverse('gestionecampionato:inserisci_titolari', kwargs={'d': '4', 'c': '4', 'a': '2'})
+        self.client.get(reverse('dashboard_index'))
+        response = self.client.post(fail_url)
+        self.assertTrue(response.status_code, 200)
+
+    def test_inserimento_riserve_post_fail(self):
+        self.profilo_allenatore.user.add(self.user)
+        Formazione.objects.all().delete()
+        fail_url = reverse('gestionecampionato:inserisci_riserve')
+        self.client.get(reverse('dashboard_index'))
+        response = self.client.post(fail_url)
         self.assertTrue(response.status_code, 200)
 
     def test_genera_calendario_get(self):
@@ -166,7 +198,6 @@ class GestioneCampionatoTestCases(TestCase):
         self.profilo_allenatore.user.add(self.user)
         self.partita = baker.make('gestionecampionato.Partita')
         self.partita.squadra.add(self.squadra)
-        print(self.squadra)
         self.client.get(reverse('dashboard_index'))
         response = self.client.get(reverse('gestionecampionato:inserisci_riserve'))
         self.assertEquals(response.status_code, 200)

@@ -83,8 +83,11 @@ class InserimentoFormazione:
         formazione_giornata = Formazione.objects.filter(
             partita=partita, squadra=squadra).filter(tipo=self._tipoFormazione).first()
 
-        if formazione_giornata.giocatore.exists():
-            formazione_giornata.giocatore.clear()
+        try:
+            if formazione_giornata.giocatore.exists():
+                formazione_giornata.giocatore.clear()
+        except Exception:
+            pass
 
         if self._form_portieri.is_valid() and self._form_difensori.is_valid(
         ) and self._form_centrocampisti.is_valid() and self._form_attaccanti.is_valid():

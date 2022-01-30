@@ -97,10 +97,9 @@ class AssociaGiocatoreASquadra(FormView):
 
     def get(self, request, *args, **kwargs):
         campionato = Campionato.objects.get(pk=request.session.get('campionato_id'))
-        try:
-            squadra = Squadra.objects.filter(campionato__id=campionato.id).exists()
+        if Squadra.objects.filter(campionato__id=campionato.id).exists():
             form = AssociaGiocatoreForm(campionato=campionato)
-        except ObjectDoesNotExist:
+        else:
             messages.error(request, 'Non ci sono squadre registrate al campionato!')
             return redirect('dashboard_index')
 
@@ -109,10 +108,12 @@ class AssociaGiocatoreASquadra(FormView):
     def post(self, request, *args, **kwargs):
         campionato = Campionato.objects.get(pk=request.session.get('campionato_id'))
         form = AssociaGiocatoreForm(request.POST, campionato=campionato)
+
         if form.is_valid():
             form.associaGiocatore()
             messages.success(request, 'Giocatore associato correttamente!')
             return redirect('gestionesquadra:associa_giocatore')
+
         return render(request, self.template_name, context={'form': form})
 
 

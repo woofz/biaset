@@ -9,7 +9,8 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import CreateView, UpdateView, ListView
 
-from core.decorators import check_user_permission_ca, check_ca_belonging, check_championship_existence, handle_view_exception
+from core.decorators import check_user_permission_ca, check_ca_belonging, check_championship_existence, \
+    handle_view_exception
 from gestionecampionato.commandpattern.generacalendariocommand import GeneraCalendarioCommand
 from gestionecampionato.commandpattern.invoker import Invoker
 from gestionecampionato.commandpattern.receiver import Receiver
@@ -23,6 +24,16 @@ from .exceptions import NumeroPartecipantiNonRaggiuntoException, VotiPresentiExc
 
 decorators = [check_user_permission_ca, handle_view_exception]
 
+
+def get_or_none(classmodel, **kwargs):
+    """Funzione per fetchare un valore eventualmente nullo dal database"""
+    try:
+        return classmodel.objects.get(**kwargs)
+    except classmodel.MultipleObjectsReturned as e:
+        print('ERR====>', e)
+
+    except classmodel.DoesNotExist:
+        return None
 
 @method_decorator(decorators, name='dispatch')
 @method_decorator(check_championship_existence, name='dispatch')
@@ -72,7 +83,8 @@ class GeneraCalendarioView(View):
             championship_admin=user)  # Prendo il campionato
         championship_teams = Squadra.objects.filter(campionato=campionato)
         if championship_teams.count() < campionato.partecipanti:
-            raise NumeroPartecipantiNonRaggiuntoException(f"Il tuo campionato non ha raggiunto il numero di partecipanti. {championship_teams.count()}/{campionato.partecipanti}")
+            raise NumeroPartecipantiNonRaggiuntoException(
+                f"Il tuo campionato non ha raggiunto il numero di partecipanti. {championship_teams.count()}/{campionato.partecipanti}")
         if Partita.objects.filter(squadra__campionato=campionato).count() > 0:
             print(Partita.objects.filter(squadra__campionato=campionato).count())
             raise CalendarioPresenteException('Il calendario per questo campionato è già stato generato!')
@@ -106,6 +118,9 @@ class InserisciFormazioneTitolariView(View):
         if (d + c + a) != 10:
             messages.error(request, 'La somma del modulo non è uguale a 10!')
             return redirect('gestionecampionato:seleziona_modulo')
+        if not Formazione.objects.filter(squadra_id=request.session['squadra_id']).exists():
+            messages.error(request, 'Non è presente alcuna partita per il tuo campionato!')
+            return redirect('dashboard_index')
 
         PortieriFormSet = formset_factory(TitolariForm, extra=1)
         DifensoriFormSet = formset_factory(TitolariForm, extra=d)
@@ -197,7 +212,6 @@ class InserisciRiserveView(View):
                                    'form_attaccanti': subsystemInserimentoRiserve.form_attaccanti})
 
 
-
 class VisualizzaCalendarioView(ListView):
     template_name = 'front/pages/gestionecampionato/list-calendario.html'
 
@@ -220,7 +234,7 @@ class VisualizzaPartitaView(View):
     template_name = 'front/pages/gestionecampionato/partita-corrente.html'
 
     def get(self, request, giornata: int, squadra_id: int, *args, **kwargs):
-        campionato = Campionato.objects.get(pk=request.session.get('campionato_id'))
+
         partita = Partita.objects.filter(
             giornata=giornata,
             squadra__id=squadra_id).first()
@@ -238,7 +252,6 @@ class VisualizzaPartitaView(View):
             titolari_prima_squadra = ''
             riserve_prima_squadra = ''
 
-
         try:
             titolari_seconda_squadra = Formazione.objects.filter(tipo='T', partita=partita,
                                                                  squadra__id=partita.squadra.last().id).first().giocatore.all() \
@@ -247,21 +260,48 @@ class VisualizzaPartitaView(View):
                                                                 squadra__id=partita.squadra.last().id).first().giocatore.all() \
                 .order_by('gestionecampionato_formazione_giocatore.id')
 
-            tit_voti = Formazione.objects.filter(tipo='T', partita=partita,
-                                                       squadra__id=partita.squadra.first().id).first().giocatore.all().values_list(
-                'id_voti').order_by('gestionecampionato_formazione_giocatore.id')
-            voti = Voto.objects.filter(id_voti__in=tit_voti, giornata=giornata)
-
         except AttributeError:
             titolari_seconda_squadra = ''
             riserve_seconda_squadra = ''
 
+        sq1 = self.populateGiocatoriFromQs(qs=titolari_prima_squadra, giornata=giornata)
+        sq1_ris = self.populateGiocatoriFromQs(qs=riserve_prima_squadra, giornata=giornata)
+
+        sq2 = self.populateGiocatoriFromQs(qs=titolari_seconda_squadra, giornata=giornata)
+        sq2_ris = self.populateGiocatoriFromQs(qs=riserve_seconda_squadra, giornata=giornata)
+
+        squadra1 = sq1['giocatori_voto']
+        squadra1_riserve = sq1_ris['giocatori_voto']
+        squadra2 = sq2['giocatori_voto']
+        squadra2_riserve = sq2_ris['giocatori_voto']
+
+        gol_squadra1 = 0
+        gol_squadra2 = 0
+
         return render(request, self.template_name, context={'partita': partita,
-                                                            'titolari_prima_squadra': titolari_prima_squadra,
-                                                            'titolari_seconda_squadra': titolari_seconda_squadra,
-                                                            'riserve_prima_squadra': riserve_prima_squadra,
-                                                            'riserve_seconda_squadra': riserve_seconda_squadra,
-                                                            'voti': voti})
+                                                            'titolari_prima_squadra': squadra1,
+                                                            'titolari_seconda_squadra': squadra2,
+                                                            'riserve_prima_squadra': squadra1_riserve,
+                                                            'riserve_seconda_squadra': squadra2_riserve,
+                                                            'gol_squadra1': gol_squadra1,
+                                                            'gol_squadra2': gol_squadra2})
+
+
+    @staticmethod
+    def populateGiocatoriFromQs(qs, giornata: int):
+        """Metodo che popola il dizionario relativo ai giocatori di una giornata, partendo da un QuerySet."""
+        dc = dict()
+        for giocatore in qs:
+            voto = get_or_none(Voto, giornata=giornata, id_voti=giocatore.id_voti)
+            dc.update({
+                giocatore.id: {
+                    'nome': giocatore.nome_completo,
+                    'voto': voto,
+                    'ruolo': giocatore.ruolo,
+                }
+            })
+        return {'giocatori_voto': dc}
+
 
 @method_decorator(decorators, name='dispatch')
 class CaricamentoVotiView(View):
@@ -273,4 +313,5 @@ class CaricamentoVotiView(View):
             raise VotiPresentiException('I voti per questa giornata sono già presenti')
         worker = ImportVoti(giornata=giornata_corrente)
         worker.vote_download()
-        return render(request, self.template_name, context={})
+        messages.success(request, 'Voti caricati con successo!')
+        return redirect('dashboard_index')

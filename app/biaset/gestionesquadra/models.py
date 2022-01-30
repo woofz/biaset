@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class Squadra(models.Model):
     nome = models.CharField(max_length=50, verbose_name="Nome squadra", unique=True, validators=[
         RegexValidator(
-            regex='^[A-Za-z0-9]*$',
+            regex='^[A-Za-z a-z 0-9]*$',
             message='Il nome della squadra deve essere alfanumerico.',
             code='invalid_squadra'
         ),

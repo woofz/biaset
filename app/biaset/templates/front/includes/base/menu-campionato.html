@@ -34,6 +34,11 @@
                  Genera calendario scontri
             </a>
         </li>
+         <li>
+            <a href="{% url 'gestionecampionato:caricamento_voti' %}">
+                 Caricamento voti
+            </a>
+        </li>
         {% endif %}
 
         {% if request.session.profilo == 'League Admin'%}
@@ -45,11 +50,6 @@
         <li>
             <a href="">
                  Inserisci campionato
-            </a>
-        </li>
-         <li>
-            <a href="">
-                 Caricamento voti
             </a>
         </li>
         {% endif %}

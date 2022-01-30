@@ -1,9 +1,10 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 from django.urls import reverse
 from model_bakery import baker
 
-from gestionesquadra.forms import InserisciSquadraForm
+from gestionesquadra.forms import InserisciSquadraForm, AssociaGiocatoreForm
 from gestionesquadra.models import Squadra
 from gestionecampionato.exceptions import CalendarioPresenteException
 from gestionecampionato.forms import CreaCampionatoForm, SelezionaModuloForm
@@ -110,3 +111,63 @@ class GestioneSquadraTestCases(TestCase):
                                           'campionato': self.campionato}, **self.kw)
         self.assertTrue(form.is_valid())
         self.assertIsInstance(form.save(), Squadra)
+
+    def test_associa_giocatore_fail_no_squadre(self):
+        self.profilo_ca.user.add(self.user)
+        self.client.get(reverse('dashboard_index'))
+        Squadra.objects.all().delete()
+        response = self.client.get(reverse('gestionesquadra:associa_giocatore'))
+        self.assertEquals(response.status_code, 302)
+
+    def test_associa_giocatore_get(self):
+        self.profilo_ca.user.add(self.user)
+        self.client.get(reverse('dashboard_index'))
+        response = self.client.get(reverse('gestionesquadra:associa_giocatore'))
+        self.assertEquals(response.status_code, 200)
+
+    def test_associa_giocatore_success(self):
+        self.profilo_ca.user.add(self.user)
+        self.client.get(reverse('dashboard_index'))
+        giocatore = baker.make('gestionesquadra.Giocatore')
+        form_kw = {'campionato': self.campionato}
+        data = {'giocatore': giocatore, 'squadra': self.squadra}
+        form = AssociaGiocatoreForm(data=data, **form_kw)
+        response = self.client.post(reverse('gestionesquadra:associa_giocatore'), data={'giocatore': giocatore.id,
+                                                                                        'squadra': self.squadra.id})
+        self.assertEquals(response.status_code, 302)
+
+    def test_associa_giocatore_form_fail(self):
+        self.profilo_ca.user.add(self.user)
+        self.client.get(reverse('dashboard_index'))
+        giocatore = baker.make('gestionesquadra.Giocatore')
+        form_kw = {'campionato': self.campionato}
+        data = {'giocatore': giocatore, 'squadra': self.squadra}
+        form = AssociaGiocatoreForm(data=data, **form_kw)
+        response = self.client.post(reverse('gestionesquadra:associa_giocatore'), data={'giocatore': giocatore,
+                                                                                        'squadra': self.squadra.id})
+        self.assertEquals(response.status_code, 200)
+
+    def test_visualizza_squadra_ownership(self):
+        self.profilo_ca.user.add(self.user)
+        self.client.get(reverse('dashboard_index'))
+        url = reverse('gestionesquadra:visualizza_squadra', kwargs={'pk': self.squadra.id})
+        response = self.client.get(url)
+        self.assertTrue(response.context['ownership'])
+
+    def test_visualizza_squadra_no_ownership(self):
+        self.profilo_allenatore.user.add(self.user)
+        self.client.get(reverse('dashboard_index'))
+        allenatore2 = baker.make(User)
+        squadra2 = baker.make(Squadra, campionato=self.campionato, allenatore=allenatore2)
+        url = reverse('gestionesquadra:visualizza_squadra', kwargs={'pk': squadra2.id})
+        response = self.client.get(url)
+        self.assertFalse(response.context['ownership'])
+
+    def test_visualizza_squadra_no_ownership_different_championship(self):
+        self.profilo_allenatore.user.add(self.user)
+        self.client.get(reverse('dashboard_index'))
+        allenatore2 = baker.make(User)
+        squadra2 = baker.make(Squadra, campionato=self.campionato, allenatore=allenatore2)
+        url = reverse('gestionesquadra:visualizza_squadra', kwargs={'pk': squadra2.id})
+        response = self.client.get(url)
+        self.assertFalse(response.context['ownership'])
