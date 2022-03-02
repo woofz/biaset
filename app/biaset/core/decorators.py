@@ -124,6 +124,8 @@ def check_partecipants(function=None):
     """Controlla se un campionato ha raggiunto il massimo numero di squadre"""
 
     def wrapper_func(request, *args, **kwargs):
+        if request.session.get('profilo') == 'League Admin':
+            return function(request, *args, **kwargs)
         campionato = Campionato.objects.get(pk=request.session.get('campionato_id'))
         numeroSquadre = Squadra.objects.filter(campionato=campionato).count()
         if numeroSquadre == campionato.partecipanti:

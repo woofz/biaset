@@ -93,3 +93,4 @@ class ListUtentiView(ListView):
     model = User
     template_name = "front/pages/gestioneutenza/list-utenti.html"
     usr = User.objects.select_related('squadra').all()
+
