@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models.expressions import RawSQL
 from django.forms import formset_factory
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -254,11 +255,10 @@ class VisualizzaPartitaView(View):
         try:
             titolari_prima_squadra = Formazione.objects.filter(tipo='T', partita=partita,
                                                                squadra__id=partita.squadra.first().id).first().giocatore.all() \
-                .order_by('gestionecampionato_formazione_giocatore.id')
+                .order_by(RawSQL('gestionecampionato_formazione_giocatore.id', tuple()).desc())
             riserve_prima_squadra = Formazione.objects.filter(tipo='R', partita=partita,
                                                               squadra__id=partita.squadra.first().id).first().giocatore.all() \
-                .order_by('gestionecampionato_formazione_giocatore.id')
-
+                .order_by(RawSQL('gestionecampionato_formazione_giocatore.id', tuple()).desc())
         except AttributeError:
             titolari_prima_squadra = ''
             riserve_prima_squadra = ''
@@ -266,10 +266,10 @@ class VisualizzaPartitaView(View):
         try:
             titolari_seconda_squadra = Formazione.objects.filter(tipo='T', partita=partita,
                                                                  squadra__id=partita.squadra.last().id).first().giocatore.all() \
-                .order_by('gestionecampionato_formazione_giocatore.id')
+                .order_by(RawSQL('gestionecampionato_formazione_giocatore.id', tuple()).desc())
             riserve_seconda_squadra = Formazione.objects.filter(tipo='R', partita=partita,
                                                                 squadra__id=partita.squadra.last().id).first().giocatore.all() \
-                .order_by('gestionecampionato_formazione_giocatore.id')
+                .order_by(RawSQL('gestionecampionato_formazione_giocatore.id', tuple()).desc())
 
         except AttributeError:
             titolari_seconda_squadra = ''
